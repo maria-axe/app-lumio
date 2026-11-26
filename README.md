@@ -221,19 +221,19 @@ Não há `useReducer`, React Router, Redux nem biblioteca externa de estado.
   <img src="frontend/public/img/logo-dark.svg" alt="Lumio — versão para tema escuro" width="360" />
 </p>
 
-O mascote é **Lumi**, um vaga-lume: a luz no abdomen representa o aprendizado acendendo. Ele mantém os mesmos arquivos por faixa etária, então `profile.js` continua resolvendo `baby | teen | adult` sem mudança de contrato.
+O mascote é **Lumi**, um vaga-lume: o halo, as antenas e a faísca representam o aprendizado acendendo. Não há brilho abdominal. Ele mantém os mesmos arquivos por faixa etária, então `profile.js` continua resolvendo `baby | teen | adult` sem mudança de contrato.
 
 | Faixa etária | Lumi | Detalhe |
 |---|---|---|
-| 3–10 anos | <img src="frontend/public/img/mascot-baby.svg" alt="Lumi, vaga-lume bebê do Lumio" width="110" /> | olhos grandes, brilho suave e faíscas |
+| 3–10 anos | <img src="frontend/public/img/mascot-baby.svg" alt="Lumi, vaga-lume bebê do Lumio" width="110" /> | olhos grandes e faíscas |
 | 11–17 anos | <img src="frontend/public/img/mascot-teen.svg" alt="Lumi, vaga-lume adolescente do Lumio" width="110" /> | fone de ouvido e caderno |
-| 18+ | <img src="frontend/public/img/mascot.svg" alt="Lumi, vaga-lume adulto do Lumio" width="110" /> | óculos e livro |
+| 18+ | <img src="frontend/public/img/mascot.svg" alt="Lumi, vaga-lume adulto do Lumio" width="110" /> | óculos |
 
 <p align="center">
   <img src="frontend/public/img/app-icon.svg" alt="Ícone do Lumio com Lumi" width="72" />
 </p>
 
-Os SVGs são locais e versionados em `frontend/public/img/`. A mesma linguagem visual aparece no favicon, nos logos e no avatar gerado por `avatar.js`. Não há screenshots versionados; os assets acima são exatamente os usados pelo app.
+Os SVGs são locais e versionados em `frontend/public/img/`. A mesma linguagem visual aparece no favicon, nos logos e no avatar gerado por `avatar.js`; nos logos, Lumi usa o boneco adulto azul sem roupa ou acessório e segura um livro no lugar da camiseta. Não há screenshots versionados; os assets acima são exatamente os usados pelo app.
 
 ---
 
@@ -325,7 +325,7 @@ app-lumio/
 └── package-lock.json
 ```
 
-`logo.svg` e `logo-dark.svg` são usados neste README. O app usa `app-icon.svg` como favicon e ícone; Lumi é escolhido pela faixa etária do perfil.
+`logo.svg` e `logo-dark.svg` são usados neste README e mostram Lumi com o livro. O app usa `app-icon.svg` como favicon e ícone; Lumi é escolhido pela faixa etária do perfil.
 
 ---
 

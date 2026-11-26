@@ -40,8 +40,6 @@
   <circle cx="92" cy="18" r="3.6" fill="#FFD34D"/>
 
   <ellipse cx="64" cy="68" rx="31" ry="39" fill="url(#bodyTeen)" stroke="#255F85" stroke-width="2.6"/>
-  <ellipse class="msc-glow" cx="64" cy="96" rx="13" ry="8" fill="#FFD34D"/>
-  <ellipse cx="64" cy="96" rx="8" ry="4.5" fill="#FFF6C2" opacity="0.9"/>
 
   <g class="msc-headphones">
     <path d="M44 59 C44 36 57 24 74 24 C91 24 104 36 104 59" fill="none" stroke="#CE82FF" stroke-width="5" stroke-linecap="round"/>

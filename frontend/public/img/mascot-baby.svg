@@ -41,8 +41,6 @@
 
   <g class="msc-body">
     <ellipse cx="64" cy="68" rx="32" ry="39" fill="url(#bodyBaby)" stroke="#2F6E94" stroke-width="2.6"/>
-    <ellipse class="msc-glow" cx="64" cy="96" rx="14" ry="8" fill="#FFD34D"/>
-    <ellipse cx="64" cy="96" rx="8" ry="4.5" fill="#FFF6C2" opacity="0.9"/>
 
     <ellipse cx="43" cy="74" rx="6" ry="4.5" fill="#FF9AA2" opacity="0.7"/>
     <ellipse cx="85" cy="74" rx="6" ry="4.5" fill="#FF9AA2" opacity="0.6"/>

@@ -40,8 +40,6 @@
   <circle cx="92" cy="18" r="3.8" fill="#FFD34D"/>
 
   <ellipse cx="64" cy="68" rx="33" ry="40" fill="url(#bodyAdult)" stroke="#255F85" stroke-width="2.6"/>
-  <ellipse class="msc-glow" cx="64" cy="97" rx="14" ry="9" fill="#FFD34D"/>
-  <ellipse cx="64" cy="97" rx="8" ry="5" fill="#FFF6C2" opacity="0.9"/>
 
   <g class="msc-eyes">
     <circle cx="51" cy="58" r="11.5" fill="#FFFFFF"/>

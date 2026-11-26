@@ -53,7 +53,6 @@ const SHAPES = {
       { cx: 34, cy: 54, rx: 23, ry: 13, rotate: -26 },
       { cx: 94, cy: 54, rx: 23, ry: 13, rotate: 26 },
     ],
-    glow: { cx: 64, cy: 96, rx: 14, ry: 8 },
     halo: { cx: 64, cy: 82, r: 40 },
     eyes: { left: 49, right: 79, y: 58, r: 13, pupil: 6 },
   },
@@ -64,7 +63,6 @@ const SHAPES = {
       { cx: 32, cy: 54, rx: 24, ry: 12, rotate: -24 },
       { cx: 96, cy: 54, rx: 24, ry: 12, rotate: 24 },
     ],
-    glow: { cx: 64, cy: 96, rx: 13, ry: 8 },
     halo: { cx: 64, cy: 82, r: 39 },
     eyes: { left: 51, right: 77, y: 59, r: 11.5, pupil: 5.4 },
   },
@@ -75,7 +73,6 @@ const SHAPES = {
       { cx: 30, cy: 55, rx: 25, ry: 13, rotate: -22 },
       { cx: 98, cy: 55, rx: 25, ry: 13, rotate: 22 },
     ],
-    glow: { cx: 64, cy: 97, rx: 14, ry: 9 },
     halo: { cx: 64, cy: 82, r: 42 },
     eyes: { left: 51, right: 77, y: 58, r: 11.5, pupil: 5 },
   },
@@ -129,7 +126,7 @@ function outfitFor(outfit, shell) {
 
   const round = (value) => Math.round(value * 100) / 100;
   const { cx, cy, rx, ry } = shell;
-  const top = cy + 13;
+  const top = cy + 20;
   const bottom = cy + ry - 2;
   const ratio = (top - cy) / ry;
   const halfTop = round(rx * Math.sqrt(Math.max(0, 1 - ratio * ratio)));
@@ -146,16 +143,16 @@ function outfitFor(outfit, shell) {
   ${collar}`;
 
   if (outfit === 'hoodie') {
-    const hoodTop = top - 8;
+    const hoodTop = top - 2;
 
     return `${base('#FFD166', '#C77A00')}
-  <path d="M${cx - 15} ${top - 1} C${cx - 11} ${hoodTop - 2} ${cx + 11} ${hoodTop - 2} ${cx + 15} ${top - 1} L${cx + 10} ${neckY + 6} C${cx + 4} ${neckY + 2} ${cx - 4} ${neckY + 2} ${cx - 10} ${neckY + 6} Z" fill="#FFD166" stroke="#C77A00" stroke-width="2"/>
+  <path d="M${cx - 15} ${top + 1} C${cx - 11} ${hoodTop} ${cx + 11} ${hoodTop} ${cx + 15} ${top + 1} L${cx + 10} ${neckY + 6} C${cx + 4} ${neckY + 2} ${cx - 4} ${neckY + 2} ${cx - 10} ${neckY + 6} Z" fill="#FFD166" stroke="#C77A00" stroke-width="2"/>
   <path d="M${cx - 5} ${neckY + 1} V${neckY + 9} M${cx + 5} ${neckY + 1} V${neckY + 9}" stroke="#FFF3C4" stroke-width="2" stroke-linecap="round"/>`;
   }
 
   return `${base('#2F3E57', '#162033')}
-  <path d="M${cx - 14} ${top - 2} L${cx} ${neckY + 9} L${cx - 6} ${bottom - 3} L${cx - 21} ${neckY + 2} Z" fill="#FFFFFF" opacity=".9"/>
-  <path d="M${cx + 14} ${top - 2} L${cx} ${neckY + 9} L${cx + 6} ${bottom - 3} L${cx + 21} ${neckY + 2} Z" fill="#FFFFFF" opacity=".9"/>
+  <path d="M${cx - 14} ${top} L${cx} ${neckY + 9} L${cx - 6} ${bottom - 3} L${cx - 21} ${neckY + 2} Z" fill="#FFFFFF" opacity=".9"/>
+  <path d="M${cx + 14} ${top} L${cx} ${neckY + 9} L${cx + 6} ${bottom - 3} L${cx + 21} ${neckY + 2} Z" fill="#FFFFFF" opacity=".9"/>
   <path d="M${cx} ${neckY + 9} V${bottom}" stroke="#FFD166" stroke-width="2"/>`;
 }
 
@@ -169,15 +166,15 @@ function faceFor(stage, palette, shape) {
   if (stage === 'baby') {
     extra = `<ellipse cx="43" cy="74" rx="7" ry="5" fill="#FF9AA2" opacity=".72"/>
   <ellipse cx="85" cy="74" rx="7" ry="5" fill="#FF9AA2" opacity=".58"/>
-  <path d="M55 81 C60 87 68 87 73 81" stroke="${line}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <path d="M55 77 C60 83 68 83 73 77" stroke="${line}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
   <g class="msc-sparkle"><path d="M20 27 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" fill="#FFD34D"/></g>`;
   } else if (stage === 'teen') {
-    extra = `<path d="M54 81 C59 86 69 86 74 81" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-  <path d="M73 83 l2 3 l2 -3 Z" fill="#FFFFFF"/>`;
+    extra = `<path d="M54 77 C59 82 69 82 74 77" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M73 79 l2 3 l2 -3 Z" fill="#FFFFFF"/>`;
   } else {
     extra = `<path d="M42 35 C48 32 54 32 59 35 M70 35 C76 32 82 32 87 35" stroke="${line}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  <path d="M55 81 C60 87 70 87 75 81" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-  <path d="M62 83 l2 3 l2 -3 Z M70 83 l2 3 l2 -3 Z" fill="#FFFFFF"/>`;
+  <path d="M55 77 C60 83 70 83 75 77" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M62 79 l2 3 l2 -3 Z M70 79 l2 3 l2 -3 Z" fill="#FFFFFF"/>`;
   }
 
   return `${extra}
@@ -244,7 +241,7 @@ function svgFor({ age, body, outfit, accessory }) {
   const stage = stageForAge(age);
   const shape = SHAPES[stage];
   const aria = `Vaga-lume ${shape.label} ${LABELS.body[body]}, ${LABELS.outfit[outfit]} e ${LABELS.accessory[accessory]}`;
-  const { glow, halo, body: shell } = shape;
+  const { halo, body: shell } = shape;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="${aria}" data-body="${body}" data-outfit="${outfit}" data-accessory="${accessory}">
   <defs>
@@ -260,10 +257,10 @@ function svgFor({ age, body, outfit, accessory }) {
     @keyframes msc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
     .msc-wing-left{transform-box:fill-box;transform-origin:90% 100%;animation:msc-wing-left 1.8s ease-in-out infinite}
     .msc-wing-right{transform-box:fill-box;transform-origin:10% 100%;animation:msc-wing-right 1.8s ease-in-out infinite}
-    .msc-halo,.msc-glow{transform-box:fill-box;transform-origin:50% 50%;animation:msc-glow 2.2s ease-in-out infinite}
+    .msc-halo{transform-box:fill-box;transform-origin:50% 50%;animation:msc-glow 2.2s ease-in-out infinite}
     .msc-eyes{transform-box:fill-box;transform-origin:50% 50%;animation:msc-blink 4.8s infinite}
     .msc-body{animation:msc-bob 2.6s ease-in-out infinite}
-    @media (prefers-reduced-motion: reduce){.msc-wing-left,.msc-wing-right,.msc-halo,.msc-glow,.msc-eyes,.msc-body{animation:none}}
+    @media (prefers-reduced-motion: reduce){.msc-wing-left,.msc-wing-right,.msc-halo,.msc-eyes,.msc-body{animation:none}}
   </style>
 
   <circle class="msc-halo" cx="${halo.cx}" cy="${halo.cy}" r="${halo.r}" fill="url(#glowGrad)" opacity=".7"/>
@@ -276,8 +273,6 @@ function svgFor({ age, body, outfit, accessory }) {
   <g class="msc-body">
     <ellipse cx="${shell.cx}" cy="${shell.cy}" rx="${shell.rx}" ry="${shell.ry}" fill="url(#bodyGrad)" stroke="${palette.line}" stroke-width="2.6"/>
     ${outfitFor(outfit, shell)}
-    <ellipse class="msc-glow" cx="${glow.cx}" cy="${glow.cy}" rx="${glow.rx}" ry="${glow.ry}" fill="#FFD34D"/>
-    <ellipse cx="${glow.cx}" cy="${glow.cy}" rx="${glow.rx * 0.58}" ry="${glow.ry * 0.55}" fill="#FFF6C2" opacity=".9"/>
     ${faceFor(stage, palette, shape)}
     ${accessoryFor(accessory, shape, shell)}
   </g>

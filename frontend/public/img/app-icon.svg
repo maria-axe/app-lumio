@@ -4,36 +4,56 @@
       <stop offset="0" stop-color="#1CB0F6"/>
       <stop offset="1" stop-color="#0E8FD1"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#FFF8C4"/>
-      <stop offset="0.6" stop-color="#FFD34D"/>
-      <stop offset="1" stop-color="#FFD34D" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F1FAFE"/>
-      <stop offset="1" stop-color="#BFE8FA"/>
-    </linearGradient>
   </defs>
   <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bg)"/>
   <rect x="2" y="2" width="60" height="60" rx="16" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="2"/>
 
-  <circle cx="32" cy="40" r="22" fill="url(#glow)" opacity="0.9"/>
-  <ellipse cx="16" cy="30" rx="12" ry="7" transform="rotate(-24 16 30)" fill="#FFFFFF" opacity="0.8"/>
-  <ellipse cx="48" cy="30" rx="12" ry="7" transform="rotate(24 48 30)" fill="#FFFFFF" opacity="0.8"/>
+  <svg x="2" y="2" width="60" height="60" viewBox="0 0 128 128">
+    <defs>
+      <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FD4F2"/><stop offset="1" stop-color="#5FB6E4"/></linearGradient>
+      <linearGradient id="wingGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#D7F1FC" stop-opacity=".6"/></linearGradient>
+      <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFF8C4"/><stop offset=".55" stop-color="#FFD34D"/><stop offset="1" stop-color="#FFD34D" stop-opacity="0"/></radialGradient>
+      <linearGradient id="bookGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6DC"/><stop offset="1" stop-color="#FFD98A"/></linearGradient>
+    </defs>
+    <style>
+      @keyframes msc-wing-left{0%,100%{transform:rotate(-24deg) translateY(0)}50%{transform:rotate(-13deg) translateY(-3px)}}
+      @keyframes msc-wing-right{0%,100%{transform:rotate(24deg) translateY(0)}50%{transform:rotate(13deg) translateY(-3px)}}
+      @keyframes msc-glow{0%,100%{opacity:.72;transform:scale(.97)}50%{opacity:1;transform:scale(1.04)}}
+      @keyframes msc-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}97%{transform:scaleY(1)}}
+      @keyframes msc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+      .msc-wing-left{transform-box:fill-box;transform-origin:90% 100%;animation:msc-wing-left 1.8s ease-in-out infinite}
+      .msc-wing-right{transform-box:fill-box;transform-origin:10% 100%;animation:msc-wing-right 1.8s ease-in-out infinite}
+      .msc-halo{transform-box:fill-box;transform-origin:50% 50%;animation:msc-glow 2.2s ease-in-out infinite}
+      .msc-eyes{transform-box:fill-box;transform-origin:50% 50%;animation:msc-blink 4.8s infinite}
+      .msc-body{animation:msc-bob 2.6s ease-in-out infinite}
+      @media (prefers-reduced-motion: reduce){.msc-wing-left,.msc-wing-right,.msc-halo,.msc-eyes,.msc-body{animation:none}}
+    </style>
 
-  <path d="M24 19 C21 12 18 9 15 8 M40 19 C43 12 46 9 49 8" stroke="#EAF7FD" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <circle cx="15" cy="8" r="2.4" fill="#FFD34D"/>
-  <circle cx="49" cy="8" r="2.4" fill="#FFD34D"/>
+    <circle class="msc-halo" cx="64" cy="82" r="42" fill="url(#glowGrad)" opacity=".7"/>
+    <ellipse class="msc-wing-left" cx="30" cy="55" rx="25" ry="13" transform="rotate(-22 30 55)" fill="url(#wingGrad)" stroke="#8FD4F2" stroke-width="2"/>
+    <ellipse class="msc-wing-right" cx="98" cy="55" rx="25" ry="13" transform="rotate(22 98 55)" fill="url(#wingGrad)" stroke="#8FD4F2" stroke-width="2"/>
+    <path d="M51 36 C47 26 42 21 37 19 M77 36 C81 26 86 21 91 19" stroke="#255F85" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <circle cx="37" cy="19" r="4" fill="#FFD34D"/>
+    <circle cx="91" cy="19" r="4" fill="#FFD34D"/>
 
-  <ellipse cx="32" cy="34" rx="17" ry="21" fill="url(#body)" stroke="#0E6F9E" stroke-width="2"/>
-  <circle cx="32" cy="49" r="5.5" fill="#FFD34D"/>
-  <circle cx="32" cy="49" r="3" fill="#FFF6C2"/>
-
-  <circle cx="26" cy="30" r="5.2" fill="#FFFFFF"/>
-  <circle cx="38" cy="30" r="5.2" fill="#FFFFFF"/>
-  <circle cx="27" cy="30.5" r="2.3" fill="#1B2A33"/>
-  <circle cx="39" cy="30.5" r="2.3" fill="#1B2A33"/>
-  <circle cx="28" cy="29.3" r="0.9" fill="#FFFFFF"/>
-  <circle cx="40" cy="29.3" r="0.9" fill="#FFFFFF"/>
-  <path d="M28 39 C30 41 34 41 36 39" stroke="#2F6E94" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <g class="msc-body">
+      <ellipse cx="64" cy="68" rx="33" ry="40" fill="url(#bodyGrad)" stroke="#255F85" stroke-width="2.6"/>
+      <path d="M42 35 C48 32 54 32 59 35 M70 35 C76 32 82 32 87 35" stroke="#255F85" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M55 77 C60 83 70 83 75 77" stroke="#255F85" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <g class="msc-eyes">
+        <circle cx="51" cy="58" r="11.5" fill="#FFFFFF"/>
+        <circle cx="77" cy="58" r="11.5" fill="#FFFFFF"/>
+        <circle cx="53" cy="59" r="5" fill="#1B2A33"/>
+        <circle cx="79" cy="59" r="5" fill="#1B2A33"/>
+        <circle cx="55" cy="56" r="2.07" fill="#FFFFFF"/>
+        <circle cx="81" cy="56" r="2.07" fill="#FFFFFF"/>
+      </g>
+      <path d="M34 88 Q48 82 62 89 L62 110 Q48 104 34 108 Z" fill="url(#bookGrad)" stroke="#255F85" stroke-width="3.2"/>
+      <path d="M94 88 Q80 82 66 89 L66 110 Q80 104 94 108 Z" fill="url(#bookGrad)" stroke="#255F85" stroke-width="3.2"/>
+      <path d="M64 89 V110" stroke="#255F85" stroke-width="2.6"/>
+      <path d="M34 108 Q48 104 62 110 M66 110 Q80 104 94 108" stroke="#1D4E70" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M42 94 Q50 90 58 95 M70 95 Q78 90 86 94 M42 101 Q50 97 58 102 M70 102 Q78 97 86 101" stroke="#D79B3B" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M39 87 Q34 94 40 101 M89 87 Q94 94 88 101" stroke="#255F85" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    </g>
+  </svg>
 </svg>
