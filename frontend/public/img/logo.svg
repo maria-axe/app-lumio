@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" width="320" height="72" role="img" aria-label="Lumio">
+  <defs>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1CB0F6"/>
+      <stop offset="1" stop-color="#0E8FD1"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="4" width="64" height="64" rx="17" fill="url(#mark)"/>
+  <path d="M48 56 L62 60 L56 48 Z" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M12 38 C12 25 22 17 34 17 C46 17 55 25 56 37 C56 46 47 50 34 50 C22 50 13 46 12 38 Z" fill="#F1FAFE"/>
+  <circle cx="42" cy="31" r="8" fill="#FFFFFF"/>
+  <circle cx="43" cy="32" r="3.8" fill="#1B2A33"/>
+  <circle cx="42" cy="31" r="9.5" fill="none" stroke="#1B2A33" stroke-width="2"/>
+  <path d="M31 30 L24 28" stroke="#1B2A33" stroke-width="2" stroke-linecap="round"/>
+  <path d="M30 38 C36 42 45 42 50 38" stroke="#2F6E94" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+  <g font-family="Nunito, ui-sans-serif, system-ui, sans-serif" font-weight="900">
+    <text x="76" y="46" font-size="38" fill="#1CB0F6">Lumio</text>
+    <text x="77" y="62" font-size="12" font-weight="800" letter-spacing="1.6" fill="#8FA2AE">APRENDA PRATICANDO</text>
+  </g>
+</svg>

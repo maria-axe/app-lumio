@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Lumio">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1CB0F6"/>
+      <stop offset="1" stop-color="#0E8FD1"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bg)"/>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="2"/>
+
+  <!-- Bolha de fala -->
+  <path d="M43 50 L57 55 L51 43 Z" fill="#FFFFFF" opacity="0.9"/>
+
+  <!-- Rosto do mascote -->
+  <path d="M10 38 C10 24 21 15 34 15 C47 15 56 24 57 37 C57 46 47 51 33 51 C20 51 11 47 10 38 Z" fill="#F1FAFE"/>
+  <path d="M14 38 C22 46 42 48 53 41 C48 49 32 52 20 48 Z" fill="#D9EFFA"/>
+
+  <circle cx="42" cy="31" r="8.5" fill="#FFFFFF"/>
+  <circle cx="43.5" cy="32" r="4" fill="#1B2A33"/>
+  <circle cx="45" cy="30.5" r="1.2" fill="#FFFFFF"/>
+  <circle cx="42" cy="31" r="10" fill="none" stroke="#1B2A33" stroke-width="2.2"/>
+  <path d="M32 30 L24 28" stroke="#1B2A33" stroke-width="2.2" stroke-linecap="round"/>
+
+  <path d="M31 39 C37 43 46 43 52 38" stroke="#2F6E94" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M36 40.5 l1.6 2 l1.6 -2 Z M43 41 l1.6 2 l1.6 -2 Z" fill="#FFFFFF"/>
+</svg>

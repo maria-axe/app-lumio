@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Mascote adolescente do Lumio">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6FB7E0"/>
+      <stop offset="1" stop-color="#3E93C7"/>
+    </linearGradient>
+    <linearGradient id="belly" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF7FD"/>
+    </linearGradient>
+  </defs>
+  <style>
+    @keyframes msc-tail-wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-9deg); } }
+    @keyframes msc-fin-wave { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(11deg); } }
+    @keyframes msc-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.12); } 97% { transform: scaleY(1); } }
+    @keyframes msc-headphones { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-1px) rotate(2deg); } }
+    .msc-tail { transform-box: fill-box; transform-origin: 100% 50%; animation: msc-tail-wag 1.9s ease-in-out infinite; }
+    .msc-fin { transform-box: fill-box; transform-origin: 50% 100%; animation: msc-fin-wave 1.5s ease-in-out infinite; }
+    .msc-eyes { transform-box: fill-box; transform-origin: 50% 50%; animation: msc-blink 4.8s infinite; }
+    .msc-headphones { transform-box: fill-box; transform-origin: 50% 70%; animation: msc-headphones 2.1s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .msc-tail, .msc-fin, .msc-eyes, .msc-headphones { animation: none; }
+    }
+  </style>
+
+  <!-- Cauda -->
+  <g class="msc-tail">
+    <path d="M20 74 C8 68 5 58 6 50 C15 55 23 61 28 68 Z" fill="#337FB2"/>
+    <path d="M20 74 C11 82 10 91 13 98 C22 93 29 87 32 80 Z" fill="#337FB2"/>
+  </g>
+
+  <!-- Corpo -->
+  <path d="M25 66 C28 42 48 28 71 28 C96 28 113 45 115 67 C117 90 100 104 72 104 C45 104 27 90 25 66 Z" fill="url(#body)"/>
+  <path d="M37 76 C47 93 62 98 76 97 C90 96 101 90 107 79 C97 93 82 99 65 96 C51 94 42 87 37 76 Z" fill="url(#belly)"/>
+
+  <!-- Barbatana -->
+  <path class="msc-fin" d="M60 30 C61 19 68 13 77 11 C76 21 72 27 68 31 Z" fill="#337FB2"/>
+
+  <!-- Fone -->
+  <g class="msc-headphones">
+    <path d="M50 55 C50 36 62 25 79 25 C96 25 107 36 107 54" fill="none" stroke="#CE82FF" stroke-width="5" stroke-linecap="round"/>
+    <rect x="43" y="50" width="12" height="20" rx="5" fill="#CE82FF"/>
+    <rect x="102" y="50" width="12" height="20" rx="5" fill="#CE82FF"/>
+    <rect x="45" y="53" width="7" height="14" rx="3.5" fill="#F3E6FF"/>
+    <rect x="105" y="53" width="5" height="14" rx="2.5" fill="#F3E6FF"/>
+  </g>
+
+  <!-- Olho -->
+  <g class="msc-eyes">
+    <circle cx="87" cy="56" r="13" fill="#FFFFFF"/>
+    <circle cx="89" cy="57" r="6" fill="#1B2A33"/>
+    <circle cx="91.5" cy="54" r="2" fill="#FFFFFF"/>
+    <circle cx="87" cy="56" r="15" fill="none" stroke="#1B2A33" stroke-width="2.4"/>
+  </g>
+
+  <!-- Sobrancelha inclinada -->
+  <path d="M76 38 C82 34 91 34 97 38" stroke="#255F85" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+
+  <!-- Sorriso de lado -->
+  <path d="M56 79 C64 86 75 86 83 79" stroke="#255F85" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M74 81 l2 3 l2 -3 Z" fill="#FFFFFF"/>
+
+  <!-- Detalhe de camiseta -->
+  <path d="M43 91 C50 99 59 103 70 104 C81 105 91 102 99 96" fill="none" stroke="#1CB0F6" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

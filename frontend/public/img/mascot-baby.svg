@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Tubarão bebê do Lumio">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8FD4F2"/>
+      <stop offset="1" stop-color="#5FB6E4"/>
+    </linearGradient>
+    <linearGradient id="belly" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF7FD"/>
+    </linearGradient>
+  </defs>
+  <style>
+    @keyframes msc-tail-wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-9deg); } }
+    @keyframes msc-fin-wave { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(11deg); } }
+    @keyframes msc-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.12); } 97% { transform: scaleY(1); } }
+    @keyframes msc-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    @keyframes msc-cheek-pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 0.95; } }
+    .msc-tail { transform-box: fill-box; transform-origin: 100% 50%; animation: msc-tail-wag 1.9s ease-in-out infinite; }
+    .msc-fin { transform-box: fill-box; transform-origin: 50% 100%; animation: msc-fin-wave 1.5s ease-in-out infinite; }
+    .msc-eyes { transform-box: fill-box; transform-origin: 50% 50%; animation: msc-blink 4.8s infinite; }
+    .msc-bubble { animation: msc-bob 2.3s ease-in-out infinite; }
+    .msc-cheek { animation: msc-cheek-pulse 2.3s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .msc-tail, .msc-fin, .msc-eyes, .msc-bubble, .msc-cheek { animation: none; }
+    }
+  </style>
+
+  <!-- Cauda pequena -->
+  <g class="msc-tail">
+    <path d="M22 78 C10 73 6 64 6 56 C16 60 24 65 29 72 Z" fill="#4E9FCE"/>
+    <path d="M22 78 C12 86 10 95 12 102 C21 97 28 91 32 84 Z" fill="#4E9FCE"/>
+  </g>
+
+  <!-- Corpo arredondado -->
+  <path d="M24 70 C24 43 45 25 70 25 C95 25 114 43 116 68 C118 92 100 108 70 108 C42 108 25 93 24 70 Z" fill="url(#body)"/>
+  <path d="M35 78 C45 96 61 102 76 101 C90 100 102 93 108 82 C98 96 82 102 65 99 C50 97 40 90 35 78 Z" fill="url(#belly)"/>
+
+  <!-- Barbatana -->
+  <path class="msc-fin" d="M62 29 C63 18 70 12 78 10 C78 20 74 27 70 31 Z" fill="#4E9FCE"/>
+
+  <!-- Bochechas -->
+  <ellipse class="msc-cheek" cx="46" cy="72" rx="7" ry="5" fill="#FFB3B3" opacity="0.7"/>
+  <ellipse class="msc-cheek" cx="96" cy="72" rx="7" ry="5" fill="#FFB3B3" opacity="0.6" style="animation-delay: 300ms"/>
+
+  <!-- Olho grande -->
+  <g class="msc-eyes">
+    <circle cx="88" cy="57" r="17" fill="#FFFFFF"/>
+    <circle cx="90" cy="58" r="8" fill="#1B2A33"/>
+    <circle cx="93" cy="54" r="2.6" fill="#FFFFFF"/>
+    <circle cx="88" cy="57" r="19" fill="none" stroke="#1B2A33" stroke-width="2.6"/>
+  </g>
+
+  <!-- Sobrancelha curiosa -->
+  <path d="M78 37 C84 33 92 33 98 37" stroke="#2F6E94" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+
+  <!-- Sorriso pequeno -->
+  <path d="M55 80 C63 87 76 87 84 80" stroke="#2F6E94" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M64 82 l2 3 l2 -3 Z" fill="#FFFFFF"/>
+
+  <!-- Bolha de fala -->
+  <g class="msc-bubble">
+    <path d="M98 27 C110 24 118 29 118 38 C118 46 110 51 101 49 L94 54 L95 46 C90 43 88 38 91 33 C93 29 95 28 98 27 Z" fill="#FFFFFF" opacity="0.95"/>
+    <path d="M99 37 C104 34 109 34 113 37" stroke="#1CB0F6" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
