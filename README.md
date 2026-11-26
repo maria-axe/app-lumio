@@ -1,11 +1,11 @@
 # Lumio
 
 <p align="center">
-  <img src="frontend/public/img/logo.svg" alt="Lumio — luz para o aprendizado" width="360" />
+  <img src="frontend/public/img/logo.svg" alt="Lumio — aprenda se divertindo" width="360" />
 </p>
 
 <p align="center">
-  <strong>Luz para o aprendizado.</strong> Um MVP local de estudos com IA, organizado em <strong>quadros</strong>.
+  <strong>Aprenda se divertindo, um quadro por vez.</strong> Um MVP local de estudos com IA, organizado em <strong>quadros</strong>.
 </p>
 
 > **Resumo:** React + Express, sem banco e sem login. O perfil fica no `localStorage`; o conteúdo é gerado pelo Gemini, com fallback automático para Groq. As chaves de API ficam apenas no servidor.

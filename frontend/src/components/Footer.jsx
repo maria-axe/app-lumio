@@ -6,7 +6,7 @@ export default function Footer() {
           <img src="/img/app-icon.svg" alt="" width="16" height="16" className="w-4 h-4 rounded shrink-0" />
           © {new Date().getFullYear()} Lumio
         </span>
-        <span className="leading-snug">Aprenda praticando, um quadro por vez</span>
+        <span className="leading-snug">Aprenda se divertindo, um quadro por vez</span>
       </div>
     </footer>
   );
