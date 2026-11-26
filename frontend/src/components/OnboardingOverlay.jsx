@@ -183,9 +183,9 @@ export default function OnboardingOverlay() {
         {step === 2 && (
           <div className="p-5 sm:p-6 space-y-4">
             <div className="flex items-center gap-4">
-              <img src={onboarding.avatarPreview || onboarding.formMascot} alt="Prévia do seu tubarão" width="112" height="112" className="w-28 h-28 shrink-0 mascot" />
+              <img src={onboarding.avatarPreview || onboarding.formMascot} alt="Prévia do seu vaga-lume" width="112" height="112" className="w-28 h-28 shrink-0 mascot" />
               <div className="min-w-0">
-                <h1 className="font-extrabold text-xl sm:text-2xl leading-tight">Crie seu tubarão</h1>
+                <h1 className="font-extrabold text-xl sm:text-2xl leading-tight">Crie seu vaga-lume</h1>
                 <p className="text-xs sm:text-sm font-semibold text-duo-text/50 dark:text-duo-text-dark/50 leading-snug">
                   Roupas e acessórios mudam só o seu avatar: não alteram seu nível nem o conteúdo dos desafios.
                 </p>

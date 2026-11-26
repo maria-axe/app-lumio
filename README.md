@@ -221,17 +221,19 @@ Não há `useReducer`, React Router, Redux nem biblioteca externa de estado.
   <img src="frontend/public/img/logo-dark.svg" alt="Lumio — versão para tema escuro" width="360" />
 </p>
 
-| Faixa etária | Mascote | Uso no app |
+O mascote é **Lumi**, um vaga-lume: a luz no abdomen representa o aprendizado acendendo. Ele mantém os mesmos arquivos por faixa etária, então `profile.js` continua resolvendo `baby | teen | adult` sem mudança de contrato.
+
+| Faixa etária | Lumi | Detalhe |
 |---|---|---|
-| 3–10 anos | <img src="frontend/public/img/mascot-baby.svg" alt="Mascote baby do Lumio" width="110" /> | onboarding e boards para crianças |
-| 11–17 anos | <img src="frontend/public/img/mascot-teen.svg" alt="Mascote adolescente do Lumio" width="110" /> | onboarding e boards para adolescentes |
-| 18+ | <img src="frontend/public/img/mascot.svg" alt="Mascote adulto do Lumio" width="110" /> | onboarding e boards para adultos |
+| 3–10 anos | <img src="frontend/public/img/mascot-baby.svg" alt="Lumi, vaga-lume bebê do Lumio" width="110" /> | olhos grandes, brilho suave e faíscas |
+| 11–17 anos | <img src="frontend/public/img/mascot-teen.svg" alt="Lumi, vaga-lume adolescente do Lumio" width="110" /> | fone de ouvido e caderno |
+| 18+ | <img src="frontend/public/img/mascot.svg" alt="Lumi, vaga-lume adulto do Lumio" width="110" /> | óculos e livro |
 
 <p align="center">
-  <img src="frontend/public/img/app-icon.svg" alt="Ícone do Lumio" width="72" />
+  <img src="frontend/public/img/app-icon.svg" alt="Ícone do Lumio com Lumi" width="72" />
 </p>
 
-Os SVGs são locais e versionados em `frontend/public/img/`. Não há screenshots versionados; os assets acima são exatamente os usados pelo app.
+Os SVGs são locais e versionados em `frontend/public/img/`. A mesma linguagem visual aparece no favicon, nos logos e no avatar gerado por `avatar.js`. Não há screenshots versionados; os assets acima são exatamente os usados pelo app.
 
 ---
 
@@ -273,9 +275,9 @@ app-lumio/
 │   │   ├── app-icon.svg            # favicon + ícone do app
 │   │   ├── logo.svg                # wordmark claro (asset disponível)
 │   │   ├── logo-dark.svg           # wordmark escuro (asset disponível)
-│   │   ├── mascot.svg              # mascote adulto
-│   │   ├── mascot-baby.svg         # mascote 3–10 anos
-│   │   └── mascot-teen.svg         # mascote 11–17 anos
+│   │   ├── mascot.svg              # Lumi adulto
+│   │   ├── mascot-baby.svg         # Lumi 3–10 anos
+│   │   └── mascot-teen.svg         # Lumi 11–17 anos
 │   └── src/
 │       ├── main.jsx
 │       ├── App.jsx                 # renderiza AppShell
@@ -323,7 +325,7 @@ app-lumio/
 └── package-lock.json
 ```
 
-`logo.svg` e `logo-dark.svg` são usados neste README. O app usa `app-icon.svg` como favicon e ícone; os mascotes são escolhidos pela faixa etária do perfil.
+`logo.svg` e `logo-dark.svg` são usados neste README. O app usa `app-icon.svg` como favicon e ícone; Lumi é escolhido pela faixa etária do perfil.
 
 ---
 
@@ -637,7 +639,7 @@ Boards com auto-start (`quiz`, `materias`, `curiosidades`, `dialogos`) usam `sta
 
 - Tailwind com `darkMode: 'class'`; script inline no `<head>` aplica tema antes do render.
 - Controles usam ícones SVG inline; exceções: seletor de idiomas com emoji de bandeira e semente do chat com 👋. Diálogos não usam ícones de música.
-- Mascotes em SVG animam cauda, nadadeira, piscar e detalhes próprios (bolha, fone ou livro); o wrapper `.mascot` adiciona bounce/tilt. O avatar gerado também recebe as animações aplicáveis; `prefers-reduced-motion` continua desligando as animações.
+- Lumi anima asas, brilho do abdome e piscar, com detalhes por idade (faíscas, fone ou livro); o wrapper `.mascot` adiciona bounce/tilt. O avatar gerado por `avatar.js` usa a mesma linguagem e as mesmas animações aplicáveis; `prefers-reduced-motion` continua desligando tudo.
 - `sound` é salvo como `on`/`off`; `theme` como `light`/`dark`.
 
 ---

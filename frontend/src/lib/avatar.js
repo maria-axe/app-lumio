@@ -1,7 +1,7 @@
 export const AVATAR_GROUPS = [
   {
     id: 'body',
-    label: 'Cor do tubarão',
+    label: 'Cor do vaga-lume',
     options: [
       { id: 'blue', label: 'Azul' },
       { id: 'green', label: 'Verde' },
@@ -38,7 +38,7 @@ const OPTION_IDS = new Map(
 );
 
 const PALETTES = {
-  blue: { light: '#8FD4F2', mid: '#5FB6E4', dark: '#4E9FCE', line: '#2F6E94' },
+  blue: { light: '#8FD4F2', mid: '#5FB6E4', dark: '#337FB2', line: '#255F85' },
   green: { light: '#A7E8B4', mid: '#5FC98A', dark: '#3A9E68', line: '#276749' },
   purple: { light: '#D7C4FA', mid: '#9B7BDE', dark: '#7A5BC1', line: '#553C9A' },
   pink: { light: '#FFD0DF', mid: '#F58FB4', dark: '#D66A97', line: '#9B4070' },
@@ -48,33 +48,36 @@ const PALETTES = {
 const SHAPES = {
   baby: {
     label: 'bebê',
-    body: 'M24 70 C24 43 45 25 70 25 C95 25 114 43 116 68 C118 92 100 108 70 108 C42 108 25 93 24 70 Z',
-    belly: 'M35 78 C45 96 61 102 76 101 C90 100 102 93 108 82 C98 96 82 102 65 99 C50 97 40 90 35 78 Z',
-    tail: [
-      'M22 78 C10 73 6 64 6 56 C16 60 24 65 29 72 Z',
-      'M22 78 C12 86 10 95 12 102 C21 97 28 91 32 84 Z',
+    body: { cx: 64, cy: 68, rx: 32, ry: 39 },
+    wings: [
+      { cx: 34, cy: 54, rx: 23, ry: 13, rotate: -26 },
+      { cx: 94, cy: 54, rx: 23, ry: 13, rotate: 26 },
     ],
-    fin: 'M62 29 C63 18 70 12 78 10 C78 20 74 27 70 31 Z',
+    glow: { cx: 64, cy: 96, rx: 14, ry: 8 },
+    halo: { cx: 64, cy: 82, r: 40 },
+    eyes: { left: 49, right: 79, y: 58, r: 13, pupil: 6 },
   },
   teen: {
     label: 'adolescente',
-    body: 'M25 66 C28 42 48 28 71 28 C96 28 113 45 115 67 C117 90 100 104 72 104 C45 104 27 90 25 66 Z',
-    belly: 'M37 76 C47 93 62 98 76 97 C90 96 101 90 107 79 C97 93 82 99 65 96 C51 94 42 87 37 76 Z',
-    tail: [
-      'M20 74 C8 68 5 58 6 50 C15 55 23 61 28 68 Z',
-      'M20 74 C11 82 10 91 13 98 C22 93 29 87 32 80 Z',
+    body: { cx: 64, cy: 68, rx: 31, ry: 39 },
+    wings: [
+      { cx: 32, cy: 54, rx: 24, ry: 12, rotate: -24 },
+      { cx: 96, cy: 54, rx: 24, ry: 12, rotate: 24 },
     ],
-    fin: 'M60 30 C61 19 68 13 77 11 C76 21 72 27 68 31 Z',
+    glow: { cx: 64, cy: 96, rx: 13, ry: 8 },
+    halo: { cx: 64, cy: 82, r: 39 },
+    eyes: { left: 51, right: 77, y: 59, r: 11.5, pupil: 5.4 },
   },
   adult: {
     label: 'adulto',
-    body: 'M22 68 C24 43 44 28 66 27 C90 26 108 42 112 65 C116 88 100 104 72 105 C44 106 25 92 22 68 Z',
-    belly: 'M34 76 C44 94 60 100 74 99 C88 98 101 91 107 79 C97 94 82 101 65 98 C51 96 41 88 34 76 Z',
-    tail: [
-      'M22 74 C11 69 7 60 7 52 C16 56 23 61 28 68 Z',
-      'M22 74 C13 81 11 90 14 97 C22 92 29 86 32 79 Z',
+    body: { cx: 64, cy: 68, rx: 33, ry: 40 },
+    wings: [
+      { cx: 30, cy: 55, rx: 25, ry: 13, rotate: -22 },
+      { cx: 98, cy: 55, rx: 25, ry: 13, rotate: 22 },
     ],
-    fin: 'M59 29 C60 17 68 10 77 8 C76 19 72 27 68 32 Z',
+    glow: { cx: 64, cy: 97, rx: 14, ry: 9 },
+    halo: { cx: 64, cy: 82, r: 42 },
+    eyes: { left: 51, right: 77, y: 58, r: 11.5, pupil: 5 },
   },
 };
 
@@ -115,114 +118,124 @@ function stageForAge(age) {
   return 'adult';
 }
 
-function outfitFor(outfit) {
+function wingMarkup(wing, side, palette) {
+  const rotate = wing.rotate;
+  const keyframe = side === 'left' ? 'msc-wing-left' : 'msc-wing-right';
+  return `<ellipse class="${keyframe}" cx="${wing.cx}" cy="${wing.cy}" rx="${wing.rx}" ry="${wing.ry}" transform="rotate(${rotate} ${wing.cx} ${wing.cy})" fill="url(#wingGrad)" stroke="${palette.light}" stroke-width="2"/>`;
+}
+
+function outfitFor(outfit, shell) {
   if (outfit === 'none') return '';
 
-  const shirt = `<path d="M39 84 C48 94 59 99 72 99 C85 99 96 94 104 84 C102 94 90 103 72 103 C54 103 42 94 39 84 Z" fill="#FFD166" stroke="#C77A00" stroke-width="2"/>
-  <path d="M54 83 C59 90 65 93 72 93 C79 93 85 90 90 83" fill="none" stroke="#FFF3C4" stroke-width="3" stroke-linecap="round"/>`;
+  const round = (value) => Math.round(value * 100) / 100;
+  const { cx, cy, rx, ry } = shell;
+  const top = cy + 13;
+  const bottom = cy + ry - 2;
+  const ratio = (top - cy) / ry;
+  const halfTop = round(rx * Math.sqrt(Math.max(0, 1 - ratio * ratio)));
+  const left = round(cx - halfTop + 1);
+  const right = round(cx + halfTop - 1);
+  const waistLeft = round(cx - rx * 0.5);
+  const waistRight = round(cx + rx * 0.5);
+  const neckY = top + 4;
 
-  if (outfit === 'shirt') return shirt;
+  const base = (fill, stroke) => `<path d="M${left} ${top} C${left + 2} ${cy + ry - 12} ${waistLeft} ${bottom} ${cx} ${bottom} C${waistRight} ${bottom} ${right - 2} ${cy + ry - 12} ${right} ${top} Z" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+  const collar = `<path d="M${cx - 9} ${neckY} C${cx - 4} ${neckY + 6} ${cx + 4} ${neckY + 6} ${cx + 9} ${neckY}" fill="none" stroke="#FFF3C4" stroke-width="3" stroke-linecap="round"/>`;
+
+  if (outfit === 'shirt') return `${base('#FFD166', '#C77A00')}
+  ${collar}`;
 
   if (outfit === 'hoodie') {
-    return `${shirt}
-  <path d="M50 82 C54 75 62 72 72 72 C82 72 90 75 94 82 L89 91 C81 86 63 86 55 91 Z" fill="#FFD166" stroke="#C77A00" stroke-width="2"/>
-  <path d="M66 84 V92 M78 84 V92" stroke="#FFF3C4" stroke-width="2" stroke-linecap="round"/>`;
+    const hoodTop = top - 8;
+
+    return `${base('#FFD166', '#C77A00')}
+  <path d="M${cx - 15} ${top - 1} C${cx - 11} ${hoodTop - 2} ${cx + 11} ${hoodTop - 2} ${cx + 15} ${top - 1} L${cx + 10} ${neckY + 6} C${cx + 4} ${neckY + 2} ${cx - 4} ${neckY + 2} ${cx - 10} ${neckY + 6} Z" fill="#FFD166" stroke="#C77A00" stroke-width="2"/>
+  <path d="M${cx - 5} ${neckY + 1} V${neckY + 9} M${cx + 5} ${neckY + 1} V${neckY + 9}" stroke="#FFF3C4" stroke-width="2" stroke-linecap="round"/>`;
   }
 
-  return `<path d="M39 84 C48 94 59 100 72 100 C85 100 96 94 104 84 C101 95 90 104 72 104 C54 104 43 95 39 84 Z" fill="#2F3E57" stroke="#162033" stroke-width="2"/>
-  <path d="M52 79 L64 92 L58 100 L45 86 Z" fill="#FFFFFF" opacity=".9"/>
-  <path d="M92 79 L80 92 L86 100 L99 86 Z" fill="#FFFFFF" opacity=".9"/>
-  <path d="M72 93 V103" stroke="#FFD166" stroke-width="2"/>`;
+  return `${base('#2F3E57', '#162033')}
+  <path d="M${cx - 14} ${top - 2} L${cx} ${neckY + 9} L${cx - 6} ${bottom - 3} L${cx - 21} ${neckY + 2} Z" fill="#FFFFFF" opacity=".9"/>
+  <path d="M${cx + 14} ${top - 2} L${cx} ${neckY + 9} L${cx + 6} ${bottom - 3} L${cx + 21} ${neckY + 2} Z" fill="#FFFFFF" opacity=".9"/>
+  <path d="M${cx} ${neckY + 9} V${bottom}" stroke="#FFD166" stroke-width="2"/>`;
 }
 
-function faceFor(stage, palette) {
-  const { line, dark } = palette;
+function faceFor(stage, palette, shape) {
+  const { line } = palette;
+  const { left, right, y, r, pupil } = shape.eyes;
+  const shine = r * 0.18;
+
+  let extra = '';
 
   if (stage === 'baby') {
-    return `<ellipse cx="46" cy="72" rx="7" ry="5" fill="#FF9AA2" opacity=".72"/>
-  <ellipse cx="96" cy="72" rx="7" ry="5" fill="#FF9AA2" opacity=".58"/>
+    extra = `<ellipse cx="43" cy="74" rx="7" ry="5" fill="#FF9AA2" opacity=".72"/>
+  <ellipse cx="85" cy="74" rx="7" ry="5" fill="#FF9AA2" opacity=".58"/>
+  <path d="M55 81 C60 87 68 87 73 81" stroke="${line}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <g class="msc-sparkle"><path d="M20 27 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" fill="#FFD34D"/></g>`;
+  } else if (stage === 'teen') {
+    extra = `<path d="M54 81 C59 86 69 86 74 81" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M73 83 l2 3 l2 -3 Z" fill="#FFFFFF"/>`;
+  } else {
+    extra = `<path d="M42 35 C48 32 54 32 59 35 M70 35 C76 32 82 32 87 35" stroke="${line}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M55 81 C60 87 70 87 75 81" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M62 83 l2 3 l2 -3 Z M70 83 l2 3 l2 -3 Z" fill="#FFFFFF"/>`;
+  }
+
+  return `${extra}
   <g class="msc-eyes">
-    <circle cx="88" cy="57" r="17" fill="#FFFFFF"/>
-    <circle cx="90" cy="58" r="8" fill="#1B2A33"/>
-    <circle cx="93" cy="54" r="2.6" fill="#FFFFFF"/>
-    <circle cx="88" cy="57" r="19" fill="none" stroke="#1B2A33" stroke-width="2.4"/>
-  </g>
-  <path d="M78 37 C84 33 92 33 98 37" stroke="${line}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  <path d="M55 80 C63 87 76 87 84 80" stroke="${line}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  <path d="M64 82 l2 3 l2 -3 Z" fill="#FFFFFF"/>
-  <g class="msc-bubble">
-    <path d="M98 27 C110 24 118 29 118 38 C118 46 110 51 101 49 L94 54 L95 46 C90 43 88 38 91 33 C93 29 95 28 98 27 Z" fill="#FFFFFF" opacity=".95"/>
-    <path d="M99 37 C104 34 109 34 113 37" stroke="${palette.mid}" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="${left}" cy="${y}" r="${r}" fill="#FFFFFF"/>
+    <circle cx="${right}" cy="${y}" r="${r}" fill="#FFFFFF"/>
+    <circle cx="${left + 2}" cy="${y + 1}" r="${pupil}" fill="#1B2A33"/>
+    <circle cx="${right + 2}" cy="${y + 1}" r="${pupil}" fill="#1B2A33"/>
+    <circle cx="${left + 4}" cy="${y - 2}" r="${shine}" fill="#FFFFFF"/>
+    <circle cx="${right + 4}" cy="${y - 2}" r="${shine}" fill="#FFFFFF"/>
   </g>`;
-  }
-
-  if (stage === 'teen') {
-    return `<g class="msc-eyes">
-    <circle cx="87" cy="56" r="13" fill="#FFFFFF"/>
-    <circle cx="89" cy="57" r="6" fill="#1B2A33"/>
-    <circle cx="91.5" cy="54" r="2" fill="#FFFFFF"/>
-    <circle cx="87" cy="56" r="15" fill="none" stroke="#1B2A33" stroke-width="2.4"/>
-  </g>
-  <path d="M76 38 C82 34 91 34 97 38" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-  <path d="M56 79 C64 86 75 86 83 79" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-  <path d="M74 81 l2 3 l2 -3 Z" fill="#FFFFFF"/>`;
-  }
-
-  return `<path d="M41 61 C44 66 44 72 41 77 M48 61 C51 66 51 72 48 77" stroke="${dark}" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <g class="msc-eyes">
-    <circle cx="55" cy="55" r="12" fill="#FFFFFF"/>
-    <circle cx="85" cy="55" r="12" fill="#FFFFFF"/>
-    <circle cx="57" cy="56" r="5" fill="#1B2A33"/>
-    <circle cx="87" cy="56" r="5" fill="#1B2A33"/>
-    <circle cx="59" cy="53.5" r="1.6" fill="#FFFFFF"/>
-    <circle cx="89" cy="53.5" r="1.6" fill="#FFFFFF"/>
-  </g>
-  <path d="M45 35 C50 32 56 32 61 35 M76 35 C81 32 87 32 92 35" stroke="${line}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  <path d="M57 76 C66 83 82 83 91 76" stroke="${line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-  <path d="M66 78 l2 3 l2 -3 Z M78 78 l2 3 l2 -3 Z" fill="#FFFFFF"/>
-  <g class="msc-book">
-    <rect x="39" y="92" width="50" height="22" rx="3" fill="url(#bookGrad)"/>
-    <rect x="39" y="92" width="50" height="22" rx="3" fill="none" stroke="#3E8F00" stroke-width="2"/>
-    <path d="M64 92 V114" stroke="#3E8F00" stroke-width="2"/>
-    <path d="M45 98 H58 M45 103 H55 M70 98 H83 M70 103 H80" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
-  </g>
-  <path d="M34 88 C31 95 33 101 39 104 C45 101 48 96 47 91 Z M94 88 C97 95 95 101 89 104 C83 101 80 96 81 91 Z" fill="${dark}"/>`;
 }
 
-function accessoryFor(accessory, stage) {
+function accessoryFor(accessory, shape, shell) {
   if (accessory === 'none') return '';
-
-  if (accessory === 'glasses' && stage === 'adult') {
-    return `<g fill="none" stroke="#1B2A33" stroke-width="2.6">
-    <circle cx="55" cy="55" r="14"/>
-    <circle cx="85" cy="55" r="14"/>
-    <path d="M69 54 C71 52 73 52 75 54" stroke-linecap="round"/>
-    <path d="M41 53 L34 50 M99 53 L106 50" stroke-linecap="round"/>
-  </g>`;
-  }
+  const { left, right, y, r } = shape.eyes;
 
   if (accessory === 'glasses') {
+    const lens = r + 2;
+    const bridgeLeft = left + lens - 1;
+    const bridgeRight = right - lens + 1;
+    const bridgeY = y - 1;
+    const bridgeMid = (bridgeLeft + bridgeRight) / 2;
+
     return `<g fill="none" stroke="#1B2A33" stroke-width="2.6">
-    <circle cx="88" cy="57" r="19"/>
-    <circle cx="52" cy="59" r="9"/>
-    <path d="M69 57 C74 54 79 54 83 56" stroke-linecap="round"/>
-    <path d="M43 59 L37 56 M107 57 L114 54" stroke-linecap="round"/>
+    <circle cx="${left}" cy="${y}" r="${lens}"/>
+    <circle cx="${right}" cy="${y}" r="${lens}"/>
+    <path d="M${bridgeLeft} ${bridgeY} Q${bridgeMid} ${bridgeY - 4} ${bridgeRight} ${bridgeY}" stroke-linecap="round"/>
+    <path d="M${left - lens} ${bridgeY} L${left - lens - 8} ${y - 5} M${right + lens} ${bridgeY} L${right + lens + 8} ${y - 5}" stroke-linecap="round"/>
   </g>`;
   }
 
   if (accessory === 'headphones') {
+    const earLeft = left - r - 7;
+    const earRight = right + r + 7;
+    const top = shell.cy - shell.ry - 5;
+    const earY = y - 1;
+
     return `<g>
-    <path d="M48 56 C48 34 62 23 79 23 C96 23 108 34 108 56" fill="none" stroke="#CE82FF" stroke-width="5" stroke-linecap="round"/>
-    <rect x="42" y="50" width="12" height="20" rx="5" fill="#CE82FF"/>
-    <rect x="104" y="50" width="12" height="20" rx="5" fill="#CE82FF"/>
-    <rect x="45" y="53" width="6" height="14" rx="3" fill="#F3E6FF"/>
-    <rect x="106" y="53" width="6" height="14" rx="3" fill="#F3E6FF"/>
+    <path d="M${earLeft} ${earY} C${earLeft} ${top + 4} ${shell.cx - 14} ${top} ${shell.cx} ${top} C${shell.cx + 14} ${top} ${earRight} ${top + 4} ${earRight} ${earY}" fill="none" stroke="#CE82FF" stroke-width="5" stroke-linecap="round"/>
+    <rect x="${earLeft - 6}" y="${earY - 6}" width="12" height="20" rx="5" fill="#CE82FF"/>
+    <rect x="${earRight - 6}" y="${earY - 6}" width="12" height="20" rx="5" fill="#CE82FF"/>
+    <rect x="${earLeft - 3}" y="${earY - 3}" width="6" height="14" rx="3" fill="#F3E6FF"/>
+    <rect x="${earRight - 3}" y="${earY - 3}" width="6" height="14" rx="3" fill="#F3E6FF"/>
   </g>`;
   }
 
+  const capLeft = shell.cx - shell.rx + 4;
+  const capRight = shell.cx + shell.rx - 4;
+  const capTop = shell.cy - shell.ry - 10;
+  const capBase = shell.cy - shell.ry + 9;
+  const brimLeft = capLeft - 4;
+  const brimRight = Math.min(120, capRight + 12);
+
   return `<g>
-    <path d="M48 40 C55 26 69 19 83 20 C96 21 106 29 109 40 Z" fill="#EF476F" stroke="#B02A4E" stroke-width="2"/>
-    <path d="M44 40 C58 36 77 36 108 41 C108 46 99 48 88 46 L48 45 Z" fill="#FF6B81" stroke="#B02A4E" stroke-width="2"/>
+    <path d="M${capLeft} ${capBase} C${capLeft + 6} ${capTop + 4} ${shell.cx - 12} ${capTop} ${shell.cx} ${capTop} C${shell.cx + 13} ${capTop} ${capRight - 5} ${capTop + 4} ${capRight} ${capBase} Z" fill="#EF476F" stroke="#B02A4E" stroke-width="2"/>
+    <path d="M${brimLeft} ${capBase} C${shell.cx - 6} ${capBase - 4} ${brimRight - 6} ${capBase - 3} ${brimRight} ${capBase + 1} L${brimRight - 3} ${capBase + 6} C${shell.cx + 8} ${capBase + 3} ${brimLeft + 10} ${capBase + 4} ${brimLeft} ${capBase + 3} Z" fill="#FF6B81" stroke="#B02A4E" stroke-width="2"/>
+    <circle cx="${shell.cx}" cy="${capTop}" r="2.5" fill="#FF6B81" stroke="#B02A4E" stroke-width="1.5"/>
   </g>`;
 }
 
@@ -230,37 +243,44 @@ function svgFor({ age, body, outfit, accessory }) {
   const palette = PALETTES[body];
   const stage = stageForAge(age);
   const shape = SHAPES[stage];
-  const aria = `Tubarão ${shape.label} ${LABELS.body[body]}, ${LABELS.outfit[outfit]} e ${LABELS.accessory[accessory]}`;
+  const aria = `Vaga-lume ${shape.label} ${LABELS.body[body]}, ${LABELS.outfit[outfit]} e ${LABELS.accessory[accessory]}`;
+  const { glow, halo, body: shell } = shape;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="${aria}" data-body="${body}" data-outfit="${outfit}" data-accessory="${accessory}">
   <defs>
     <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${palette.light}"/><stop offset="1" stop-color="${palette.mid}"/></linearGradient>
-    <linearGradient id="bellyGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#EAF7FD"/></linearGradient>
-    <linearGradient id="bookGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6EDB0B"/><stop offset="1" stop-color="#4BA800"/></linearGradient>
+    <linearGradient id="wingGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#D7F1FC" stop-opacity=".6"/></linearGradient>
+    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFF8C4"/><stop offset=".55" stop-color="#FFD34D"/><stop offset="1" stop-color="#FFD34D" stop-opacity="0"/></radialGradient>
   </defs>
   <style>
-    @keyframes msc-tail-wag{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-8deg)}}
-    @keyframes msc-fin-wave{0%,100%{transform:rotate(0deg)}50%{transform:rotate(9deg)}}
+    @keyframes msc-wing-left{0%,100%{transform:rotate(-24deg) translateY(0)}50%{transform:rotate(-13deg) translateY(-3px)}}
+    @keyframes msc-wing-right{0%,100%{transform:rotate(24deg) translateY(0)}50%{transform:rotate(13deg) translateY(-3px)}}
+    @keyframes msc-glow{0%,100%{opacity:.72;transform:scale(.97)}50%{opacity:1;transform:scale(1.04)}}
     @keyframes msc-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.12)}97%{transform:scaleY(1)}}
-    @keyframes msc-bubble-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-    @keyframes msc-book-tilt{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-3deg)}}
-    .msc-tail{transform-box:fill-box;transform-origin:100% 50%;animation:msc-tail-wag 1.9s ease-in-out infinite}
-    .msc-fin{transform-box:fill-box;transform-origin:50% 100%;animation:msc-fin-wave 1.5s ease-in-out infinite}
+    @keyframes msc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+    .msc-wing-left{transform-box:fill-box;transform-origin:90% 100%;animation:msc-wing-left 1.8s ease-in-out infinite}
+    .msc-wing-right{transform-box:fill-box;transform-origin:10% 100%;animation:msc-wing-right 1.8s ease-in-out infinite}
+    .msc-halo,.msc-glow{transform-box:fill-box;transform-origin:50% 50%;animation:msc-glow 2.2s ease-in-out infinite}
     .msc-eyes{transform-box:fill-box;transform-origin:50% 50%;animation:msc-blink 4.8s infinite}
-    .msc-bubble{animation:msc-bubble-bob 2.3s ease-in-out infinite}
-    .msc-book{transform-box:fill-box;transform-origin:50% 100%;animation:msc-book-tilt 2.4s ease-in-out infinite}
-    @media (prefers-reduced-motion: reduce){.msc-tail,.msc-fin,.msc-eyes,.msc-bubble,.msc-book{animation:none}}
+    .msc-body{animation:msc-bob 2.6s ease-in-out infinite}
+    @media (prefers-reduced-motion: reduce){.msc-wing-left,.msc-wing-right,.msc-halo,.msc-glow,.msc-eyes,.msc-body{animation:none}}
   </style>
-  <g class="msc-tail">
-    <path d="${shape.tail[0]}" fill="${palette.dark}"/>
-    <path d="${shape.tail[1]}" fill="${palette.dark}"/>
+
+  <circle class="msc-halo" cx="${halo.cx}" cy="${halo.cy}" r="${halo.r}" fill="url(#glowGrad)" opacity=".7"/>
+  ${wingMarkup(shape.wings[0], 'left', palette)}
+  ${wingMarkup(shape.wings[1], 'right', palette)}
+  <path d="M51 36 C47 26 42 21 37 19 M77 36 C81 26 86 21 91 19" stroke="${palette.line}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <circle cx="37" cy="19" r="4" fill="#FFD34D"/>
+  <circle cx="91" cy="19" r="4" fill="#FFD34D"/>
+
+  <g class="msc-body">
+    <ellipse cx="${shell.cx}" cy="${shell.cy}" rx="${shell.rx}" ry="${shell.ry}" fill="url(#bodyGrad)" stroke="${palette.line}" stroke-width="2.6"/>
+    ${outfitFor(outfit, shell)}
+    <ellipse class="msc-glow" cx="${glow.cx}" cy="${glow.cy}" rx="${glow.rx}" ry="${glow.ry}" fill="#FFD34D"/>
+    <ellipse cx="${glow.cx}" cy="${glow.cy}" rx="${glow.rx * 0.58}" ry="${glow.ry * 0.55}" fill="#FFF6C2" opacity=".9"/>
+    ${faceFor(stage, palette, shape)}
+    ${accessoryFor(accessory, shape, shell)}
   </g>
-  <path d="${shape.body}" fill="url(#bodyGrad)"/>
-  <path d="${shape.belly}" fill="url(#bellyGrad)"/>
-  <path class="msc-fin" d="${shape.fin}" fill="${palette.dark}"/>
-  ${outfitFor(outfit)}
-  ${faceFor(stage, palette)}
-  ${accessoryFor(accessory, stage)}
 </svg>`;
 }
 

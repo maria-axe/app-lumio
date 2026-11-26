@@ -4,15 +4,29 @@
       <stop offset="0" stop-color="#1CB0F6"/>
       <stop offset="1" stop-color="#0E8FD1"/>
     </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFF8C4"/>
+      <stop offset="0.6" stop-color="#FFD34D"/>
+      <stop offset="1" stop-color="#FFD34D" stop-opacity="0"/>
+    </radialGradient>
   </defs>
   <rect x="2" y="4" width="64" height="64" rx="17" fill="url(#mark)"/>
-  <path d="M48 56 L62 60 L56 48 Z" fill="#FFFFFF" opacity="0.9"/>
-  <path d="M12 38 C12 25 22 17 34 17 C46 17 55 25 56 37 C56 46 47 50 34 50 C22 50 13 46 12 38 Z" fill="#F1FAFE"/>
-  <circle cx="42" cy="31" r="8" fill="#FFFFFF"/>
-  <circle cx="43" cy="32" r="3.8" fill="#1B2A33"/>
-  <circle cx="42" cy="31" r="9.5" fill="none" stroke="#1B2A33" stroke-width="2"/>
-  <path d="M31 30 L24 28" stroke="#1B2A33" stroke-width="2" stroke-linecap="round"/>
-  <path d="M30 38 C36 42 45 42 50 38" stroke="#2F6E94" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <circle cx="34" cy="50" r="21" fill="url(#halo)" opacity="0.9"/>
+  <ellipse cx="18" cy="38" rx="11" ry="6.5" transform="rotate(-24 18 38)" fill="#FFFFFF" opacity="0.82"/>
+  <ellipse cx="50" cy="38" rx="11" ry="6.5" transform="rotate(24 50 38)" fill="#FFFFFF" opacity="0.82"/>
+  <path d="M26 27 C23 20 20 17 17 16 M42 27 C45 20 48 17 51 16" stroke="#EAF7FD" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <circle cx="17" cy="16" r="2.2" fill="#FFD34D"/>
+  <circle cx="51" cy="16" r="2.2" fill="#FFD34D"/>
+  <ellipse cx="34" cy="42" rx="16" ry="20" fill="#F1FAFE" stroke="#0E6F9E" stroke-width="1.8"/>
+  <circle cx="34" cy="56" r="5" fill="#FFD34D"/>
+  <circle cx="34" cy="56" r="2.8" fill="#FFF6C2"/>
+  <circle cx="28" cy="38" r="5" fill="#FFFFFF"/>
+  <circle cx="40" cy="38" r="5" fill="#FFFFFF"/>
+  <circle cx="29" cy="38.5" r="2.1" fill="#1B2A33"/>
+  <circle cx="41" cy="38.5" r="2.1" fill="#1B2A33"/>
+  <circle cx="29.8" cy="37.4" r="0.8" fill="#FFFFFF"/>
+  <circle cx="41.8" cy="37.4" r="0.8" fill="#FFFFFF"/>
+  <path d="M30 47 C32 49 36 49 38 47" stroke="#2F6E94" stroke-width="1.7" fill="none" stroke-linecap="round"/>
 
   <g font-family="Nunito, ui-sans-serif, system-ui, sans-serif" font-weight="900">
     <text x="76" y="46" font-size="38" fill="#1CB0F6">Lumio</text>

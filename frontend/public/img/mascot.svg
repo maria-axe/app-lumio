@@ -1,88 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Tubarão adulto estudioso do Lumio">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Lumi, vaga-lume adulto do Lumio">
   <defs>
+    <radialGradient id="glowAdult" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFF8C4"/>
+      <stop offset="0.55" stop-color="#FFD34D"/>
+      <stop offset="1" stop-color="#FFD34D" stop-opacity="0"/>
+    </radialGradient>
     <linearGradient id="bodyAdult" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#7FC4EA"/>
-      <stop offset="1" stop-color="#3E8FC4"/>
+      <stop offset="1" stop-color="#337FB2"/>
     </linearGradient>
-    <linearGradient id="bellyAdult" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFFFFF"/>
-      <stop offset="1" stop-color="#E8F6FD"/>
-    </linearGradient>
-    <linearGradient id="bookAdult" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#6EDB0B"/>
-      <stop offset="1" stop-color="#4BA800"/>
+    <linearGradient id="wingAdult" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#D7F1FC" stop-opacity="0.55"/>
     </linearGradient>
   </defs>
   <style>
-    @keyframes msc-tail-wag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-8deg); } }
-    @keyframes msc-fin-wave { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(9deg); } }
+    @keyframes msc-wing-left { 0%, 100% { transform: rotate(-22deg) translateY(0); } 50% { transform: rotate(-13deg) translateY(-2px); } }
+    @keyframes msc-wing-right { 0%, 100% { transform: rotate(22deg) translateY(0); } 50% { transform: rotate(13deg) translateY(-2px); } }
+    @keyframes msc-glow { 0%, 100% { opacity: 0.72; transform: scale(0.97); } 50% { opacity: 1; transform: scale(1.04); } }
     @keyframes msc-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.12); } 97% { transform: scaleY(1); } }
     @keyframes msc-book-tilt { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-3deg); } }
-    .msc-tail { transform-box: fill-box; transform-origin: 100% 50%; animation: msc-tail-wag 2s ease-in-out infinite; }
-    .msc-fin { transform-box: fill-box; transform-origin: 50% 100%; animation: msc-fin-wave 1.7s ease-in-out infinite; }
+    .msc-wing-left { transform-box: fill-box; transform-origin: 90% 100%; animation: msc-wing-left 2s ease-in-out infinite; }
+    .msc-wing-right { transform-box: fill-box; transform-origin: 10% 100%; animation: msc-wing-right 2s ease-in-out infinite; }
+    .msc-glow { transform-box: fill-box; transform-origin: 50% 50%; animation: msc-glow 2.4s ease-in-out infinite; }
     .msc-eyes { transform-box: fill-box; transform-origin: 50% 50%; animation: msc-blink 5.2s infinite; }
     .msc-book { transform-box: fill-box; transform-origin: 50% 100%; animation: msc-book-tilt 2.4s ease-in-out infinite; }
     @media (prefers-reduced-motion: reduce) {
-      .msc-tail, .msc-fin, .msc-eyes, .msc-book { animation: none; }
+      .msc-wing-left, .msc-wing-right, .msc-glow, .msc-eyes, .msc-book { animation: none; }
     }
   </style>
 
-  <!-- Cauda discreta -->
-  <g class="msc-tail">
-    <path d="M22 74 C11 69 7 60 7 52 C16 56 23 61 28 68 Z" fill="#337FB2"/>
-    <path d="M22 74 C13 81 11 90 14 97 C22 92 29 86 32 79 Z" fill="#337FB2"/>
-  </g>
+  <circle class="msc-glow" cx="64" cy="82" r="42" fill="url(#glowAdult)" opacity="0.7"/>
 
-  <!-- Corpo -->
-  <path d="M22 68 C24 43 44 28 66 27 C90 26 108 42 112 65 C116 88 100 104 72 105 C44 106 25 92 22 68 Z" fill="url(#bodyAdult)"/>
+  <ellipse class="msc-wing-left" cx="30" cy="55" rx="25" ry="13" fill="url(#wingAdult)" stroke="#BFE8FA" stroke-width="2"/>
+  <ellipse class="msc-wing-right" cx="98" cy="55" rx="25" ry="13" fill="url(#wingAdult)" stroke="#BFE8FA" stroke-width="2"/>
 
-  <!-- Barriga -->
-  <path d="M34 76 C44 94 60 100 74 99 C88 98 101 91 107 79 C97 94 82 101 65 98 C51 96 41 88 34 76 Z" fill="url(#bellyAdult)"/>
+  <path d="M50 36 C46 25 41 20 36 18 M78 36 C82 25 87 20 92 18" stroke="#255F85" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <circle cx="36" cy="18" r="3.8" fill="#FFD34D"/>
+  <circle cx="92" cy="18" r="3.8" fill="#FFD34D"/>
 
-  <!-- Barbatana dorsal -->
-  <path class="msc-fin" d="M59 29 C60 17 68 10 77 8 C76 19 72 27 68 32 Z" fill="#337FB2"/>
+  <ellipse cx="64" cy="68" rx="33" ry="40" fill="url(#bodyAdult)" stroke="#255F85" stroke-width="2.6"/>
+  <ellipse class="msc-glow" cx="64" cy="97" rx="14" ry="9" fill="#FFD34D"/>
+  <ellipse cx="64" cy="97" rx="8" ry="5" fill="#FFF6C2" opacity="0.9"/>
 
-  <!-- Guelras -->
-  <path d="M41 61 C44 66 44 72 41 77" stroke="#337FB2" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  <path d="M48 61 C51 66 51 72 48 77" stroke="#337FB2" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-
-  <!-- Olhos -->
   <g class="msc-eyes">
-    <circle cx="55" cy="55" r="12" fill="#FFFFFF"/>
-    <circle cx="85" cy="55" r="12" fill="#FFFFFF"/>
-    <circle cx="57" cy="56" r="5" fill="#1B2A33"/>
-    <circle cx="87" cy="56" r="5" fill="#1B2A33"/>
-    <circle cx="59" cy="53.5" r="1.6" fill="#FFFFFF"/>
-    <circle cx="89" cy="53.5" r="1.6" fill="#FFFFFF"/>
+    <circle cx="51" cy="58" r="11.5" fill="#FFFFFF"/>
+    <circle cx="77" cy="58" r="11.5" fill="#FFFFFF"/>
+    <circle cx="53" cy="59" r="5" fill="#1B2A33"/>
+    <circle cx="79" cy="59" r="5" fill="#1B2A33"/>
+    <circle cx="55" cy="56.5" r="1.7" fill="#FFFFFF"/>
+    <circle cx="81" cy="56.5" r="1.7" fill="#FFFFFF"/>
   </g>
 
-  <!-- Óculos -->
-  <circle cx="55" cy="55" r="14" fill="none" stroke="#1B2A33" stroke-width="2.6"/>
-  <circle cx="85" cy="55" r="14" fill="none" stroke="#1B2A33" stroke-width="2.6"/>
-  <path d="M69 54 C71 52.5 73 52.5 75 54" stroke="#1B2A33" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-  <path d="M41 53 L34 50" stroke="#1B2A33" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M99 53 L106 50" stroke="#1B2A33" stroke-width="2.6" stroke-linecap="round"/>
+  <g fill="none" stroke="#1B2A33" stroke-width="2.6">
+    <circle cx="51" cy="58" r="13.5"/>
+    <circle cx="77" cy="58" r="13.5"/>
+    <path d="M63.5 57 Q64 53 64.5 57" stroke-linecap="round"/>
+    <path d="M37.5 57 L29.5 53 M90.5 57 L98.5 53" stroke-linecap="round"/>
+  </g>
 
-  <!-- Sobrancelhas calmas -->
-  <path d="M45 35 C50 32 56 32 61 35" stroke="#255F85" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-  <path d="M76 35 C81 32 87 32 92 35" stroke="#255F85" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M42 35 C48 32 54 32 59 35 M71 35 C76 32 82 32 87 35" stroke="#255F85" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M54 80 C59 86 70 86 75 80" stroke="#255F85" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M61 82 l2 3 l2 -3 Z M69 82 l2 3 l2 -3 Z" fill="#FFFFFF"/>
 
-  <!-- Sorriso -->
-  <path d="M57 76 C66 83 82 83 91 76" stroke="#255F85" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-  <path d="M66 78 l2 3 l2 -3 Z M78 78 l2 3 l2 -3 Z" fill="#FFFFFF"/>
-
-  <!-- Livro -->
   <g class="msc-book">
-    <rect x="39" y="92" width="50" height="22" rx="3" fill="url(#bookAdult)"/>
-    <rect x="39" y="92" width="50" height="22" rx="3" fill="none" stroke="#3E8F00" stroke-width="2"/>
-    <path d="M64 92 V114" stroke="#3E8F00" stroke-width="2"/>
-    <rect x="45" y="98" width="13" height="2.2" rx="1.1" fill="#FFFFFF" opacity="0.9"/>
-    <rect x="45" y="103" width="10" height="2.2" rx="1.1" fill="#FFFFFF" opacity="0.65"/>
-    <rect x="70" y="98" width="13" height="2.2" rx="1.1" fill="#FFFFFF" opacity="0.9"/>
-    <rect x="70" y="103" width="10" height="2.2" rx="1.1" fill="#FFFFFF" opacity="0.65"/>
+    <rect x="40" y="98" width="48" height="20" rx="3" fill="#6EDB0B" stroke="#4BA800" stroke-width="2"/>
+    <path d="M64 98 V118" stroke="#4BA800" stroke-width="2"/>
+    <path d="M46 104 h12 M46 109 h9 M70 104 h12 M70 109 h9" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
   </g>
-
-  <!-- Nadadeiras segurando o livro -->
-  <path d="M34 88 C31 95 33 101 39 104 C45 101 48 96 47 91 Z" fill="#337FB2"/>
-  <path d="M94 88 C97 95 95 101 89 104 C83 101 80 96 81 91 Z" fill="#337FB2"/>
 </svg>
