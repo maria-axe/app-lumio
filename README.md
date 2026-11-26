@@ -1,7 +1,7 @@
 # Lumio
 
 <p align="center">
-  <img src="frontend/public/img/logo.svg" alt="Lumio — aprenda se divertindo" width="360" />
+  <img src="frontend/public/img/logo.svg?v=2" alt="Lumio — aprenda se divertindo" width="360" />
 </p>
 
 <p align="center">
@@ -218,7 +218,7 @@ Não há `useReducer`, React Router, Redux nem biblioteca externa de estado.
 ## Identidade visual
 
 <p align="center">
-  <img src="frontend/public/img/logo-dark.svg" alt="Lumio — versão para tema escuro" width="360" />
+  <img src="frontend/public/img/logo-dark.svg?v=2" alt="Lumio — versão para tema escuro" width="360" />
 </p>
 
 O mascote é **Lumi**, um vaga-lume: o halo, as antenas e a faísca representam o aprendizado acendendo. Não há brilho abdominal. Ele mantém os mesmos arquivos por faixa etária, então `profile.js` continua resolvendo `baby | teen | adult` sem mudança de contrato.
