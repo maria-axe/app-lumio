@@ -86,7 +86,7 @@ function shuffleOptions({ question, audio, options, correctIndex, translation, e
   };
 }
 
-export async function generateQuiz({ level, subject, asked = [], profile, apiKey, signal }) {
+export async function generateQuiz({ level, subject, asked = [], profile, apiKey, signal, env = process.env }) {
   try {
     const subj = SUBJECTS?.[subject] || {};
     const isGeneral = subj.type === 'general';
@@ -110,6 +110,7 @@ export async function generateQuiz({ level, subject, asked = [], profile, apiKey
     const quiz = await generateContent({
       apiKey,
       signal,
+      env,
       systemInstruction: appendStudentContext(buildQuizSystemInstruction(level, subject, asked), profile),
       contents: [
         {

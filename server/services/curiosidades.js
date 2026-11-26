@@ -91,11 +91,12 @@ REGRAS OBRIGATÓRIAS:
   return { parts: [{ text: parts.join('\n\n') }] };
 }
 
-export async function generateCuriosidade({ asked = [], profile, apiKey, signal }) {
+export async function generateCuriosidade({ asked = [], profile, apiKey, signal, env = process.env }) {
   try {
     const curiosidade = await generateContent({
       apiKey,
       signal,
+      env,
       systemInstruction: appendStudentContext(buildSystemInstruction(asked.slice(-20)), profile),
       contents: [{ role: 'user', parts: [{ text: 'Gere AGORA uma nova pergunta de curiosidade, diferente das anteriores.' }] }],
       generationConfig: {

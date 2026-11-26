@@ -34,11 +34,12 @@ export class GeminiError extends Error {
   }
 }
 
-export async function generateReply({ messages, level, subject, profile, apiKey, signal }) {
+export async function generateReply({ messages, level, subject, profile, apiKey, signal, env = process.env }) {
   try {
     return await generateContent({
       apiKey,
       signal,
+      env,
       systemInstruction: appendStudentContext(buildSystemInstruction(level, subject), profile),
       contents: [...buildSeedExchange(subject), ...toContents(messages)],
       generationConfig: { maxOutputTokens: MAX_OUTPUT_TOKENS },

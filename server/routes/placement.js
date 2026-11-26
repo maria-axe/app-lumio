@@ -38,9 +38,9 @@ router.post('/start', async (req, res) => {
   }
 });
 
-router.post('/finish', (req, res) => {
+router.post('/finish', async (req, res) => {
   try {
-    const result = gradePlacement({
+    const result = await gradePlacement({
       token: req.body?.token,
       answers: req.body?.answers,
     });

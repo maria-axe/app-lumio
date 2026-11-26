@@ -1,5 +1,5 @@
-export function hasAiKey() {
-  return Boolean(process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY);
+export function hasAiKey(env = process.env) {
+  return Boolean(env.GEMINI_API_KEY || env.GROQ_API_KEY);
 }
 
 export function missingAiKeyError() {

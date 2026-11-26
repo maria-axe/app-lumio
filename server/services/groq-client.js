@@ -85,8 +85,8 @@ function toResponseFormat(responseSchema) {
   };
 }
 
-function configuredModels() {
-  const configured = process.env.GROQ_MODELS
+function configuredModels(env) {
+  const configured = env.GROQ_MODELS
     ?.split(',')
     .map((model) => model.trim())
     .filter(Boolean);
@@ -134,10 +134,10 @@ async function callGroq({ model, apiKey, systemInstruction, contents, generation
  * Chama o Groq com fallback entre modelos.
  * Lança um Error com `.status` quando todos falham.
  */
-export async function generateWithGroq({ apiKey, systemInstruction, contents, generationConfig, signal, parse }) {
+export async function generateWithGroq({ apiKey, systemInstruction, contents, generationConfig, signal, parse, env = process.env }) {
   if (!apiKey) throw toError('GROQ_API_KEY not set', 500);
 
-  const models = configuredModels();
+  const models = configuredModels(env);
   let lastError = toError('AI request failed', 502);
 
   for (let index = 0; index < models.length; index += 1) {

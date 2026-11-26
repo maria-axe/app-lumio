@@ -322,7 +322,12 @@ app-lumio/
 ├── .env.example
 ├── .gitignore
 ├── package.json
-└── package-lock.json
+├── package-lock.json
+├── wrangler.jsonc                  # config do Worker + assets
+└── worker/
+    ├── index.js                    # roteador: /api/* -> Worker, resto -> assets
+    ├── api.js                      # handlers HTTP (equivalente às routes do Express)
+    └── http.js                     # respostas JSON e leitura limitada do body
 ```
 
 `logo.svg` e `logo-dark.svg` são usados neste README e mostram Lumi com o livro. O app usa `app-icon.svg` como favicon e ícone; Lumi é escolhido pela faixa etária do perfil.
@@ -376,6 +381,23 @@ npm run dev            # Vite em http://localhost:5173, com proxy /api
 ```
 
 Atalhos mantidos: `npm run build` = `npm run frontend:build`; `npm run preview` = `npm run frontend:preview`.
+
+### Cloudflare Workers
+
+O mesmo frontend e a mesma regra de negócio rodam na Cloudflare sem Express. O Worker em `worker/index.js` atende `/api/*`; os demais caminhos são servidos de `frontend/dist/` pelo binding `ASSETS`. `wrangler.jsonc` usa `not_found_handling: "single-page-application"` para `/board/:id` e `run_worker_first: ["/api/*"]` para a API não cair no `index.html`.
+
+```bash
+npm install
+npx wrangler secret put GEMINI_API_KEY
+npx wrangler secret put GROQ_API_KEY
+npx wrangler secret put PLACEMENT_SECRET
+npm run worker:dev        # testa local com as Workers bindings
+npm run deploy:cloudflare # npm ci no frontend + build + wrangler deploy
+```
+
+Se aparecer `vite: not found`, rode `npm run install:frontend`. O script de deploy já faz isso.
+
+`.env` continua apenas local. No Worker, segredos vêm de `env`, nunca de `process.env` ou de variáveis `VITE_*`. O Express em `server/` continua funcionando normalmente para `npm start`.
 
 Não há scripts de `test` ou `lint`.
 

@@ -155,11 +155,12 @@ REGRAS OBRIGATÓRIAS:
   return { parts: [{ text: parts.join('\n\n') }] };
 }
 
-export async function generateDialogo({ subject = 'english', level = 'B1', used = [], profile, apiKey, signal }) {
+export async function generateDialogo({ subject = 'english', level = 'B1', used = [], profile, apiKey, signal, env = process.env }) {
   try {
     return await generateContent({
       apiKey,
       signal,
+      env,
       systemInstruction: appendStudentContext(
         buildSystemInstruction({ subject, level, used: used.slice(-12) }),
         profile,

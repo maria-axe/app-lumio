@@ -72,8 +72,8 @@ async function callModel({ model, apiKey, systemInstruction, contents, generatio
  * Chama generateContent com fallback entre modelos.
  * Lança um Error com `.status` quando todos falham.
  */
-export async function generateContent({ apiKey, systemInstruction, contents, generationConfig, signal, parse }) {
-  const groqKey = process.env.GROQ_API_KEY;
+export async function generateContent({ apiKey, systemInstruction, contents, generationConfig, signal, parse, env = process.env }) {
+  const groqKey = env.GROQ_API_KEY;
   if (!apiKey && !groqKey) {
     throw toError('No AI API key configured. Add GEMINI_API_KEY or GROQ_API_KEY to .env', 500);
   }
@@ -153,6 +153,7 @@ export async function generateContent({ apiKey, systemInstruction, contents, gen
         generationConfig,
         signal,
         parse,
+        env,
       });
     } catch (error) {
       if (signal?.aborted) throw error;

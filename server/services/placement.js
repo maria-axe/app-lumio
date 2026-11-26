@@ -1,4 +1,3 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
 import { SUBJECTS, maxLevelForAge, resolveSubject } from '../prompts.js';
 import { generateContent } from './gemini-client.js';
 import { appendStudentContext } from './student-context.js';
@@ -116,37 +115,85 @@ function shuffleQuestions(questions) {
   });
 }
 
-function getSecret() {
-  const secret = process.env.PLACEMENT_SECRET || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY;
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+function toBase64Url(bytes) {
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function fromBase64Url(value) {
+  if (!/^[A-Za-z0-9_-]+$/.test(value)) throw new Error('Invalid base64url');
+  const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+  const binary = atob(padded);
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+}
+
+function getSecret(env) {
+  const secret = env.PLACEMENT_SECRET || env.GEMINI_API_KEY || env.GROQ_API_KEY;
   if (!secret) throw new PlacementError('Placement secret not configured', 500);
   return secret;
 }
 
-function sign(payload) {
-  const encoded = Buffer.from(JSON.stringify(payload)).toString('base64url');
-  const signature = createHmac('sha256', getSecret()).update(encoded).digest('base64url');
+async function importHmacKey(secret) {
+  return crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+}
+
+async function sign(payload, env) {
+  const encoded = toBase64Url(encoder.encode(JSON.stringify(payload)));
+  const key = await importHmacKey(getSecret(env));
+  const signature = toBase64Url(
+    new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(encoded)))
+  );
   return `${encoded}.${signature}`;
 }
 
-function verify(token) {
+function constantTimeEqual(left, right) {
+  if (left.length !== right.length) return false;
+  let diff = 0;
+  for (let index = 0; index < left.length; index += 1) {
+    diff |= left[index] ^ right[index];
+  }
+  return diff === 0;
+}
+
+async function verify(token, env) {
   if (typeof token !== 'string') throw new PlacementError('Invalid placement token', 400);
 
-  const [encoded, signature] = token.split('.');
+  const parts = token.split('.');
+  if (parts.length !== 2) throw new PlacementError('Invalid placement token', 400);
+  const [encoded, signature] = parts;
   if (!encoded || !signature) throw new PlacementError('Invalid placement token', 400);
 
-  const expected = createHmac('sha256', getSecret()).update(encoded).digest('base64url');
-  const receivedBuffer = Buffer.from(signature);
-  const expectedBuffer = Buffer.from(expected);
-  if (
-    receivedBuffer.length !== expectedBuffer.length ||
-    !timingSafeEqual(receivedBuffer, expectedBuffer)
-  ) {
+  const secret = getSecret(env);
+  let received;
+  let expected;
+  try {
+    received = fromBase64Url(signature);
+    const key = await importHmacKey(secret);
+    expected = new Uint8Array(
+      await crypto.subtle.sign('HMAC', key, encoder.encode(encoded))
+    );
+  } catch {
+    throw new PlacementError('Invalid placement token', 400);
+  }
+
+  if (!constantTimeEqual(received, expected)) {
     throw new PlacementError('Invalid placement token', 400);
   }
 
   let payload;
   try {
-    payload = JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'));
+    payload = JSON.parse(decoder.decode(fromBase64Url(encoded)));
   } catch {
     throw new PlacementError('Invalid placement token', 400);
   }
@@ -195,12 +242,13 @@ REGRAS OBRIGATÓRIAS:
   };
 }
 
-export async function generatePlacement({ subject = 'english', profile, apiKey, signal }) {
+export async function generatePlacement({ subject = 'english', profile, apiKey, signal, env = process.env }) {
   try {
     const resolvedSubject = resolveSubject(subject);
     const { questions } = await generateContent({
       apiKey,
       signal,
+      env,
       systemInstruction: appendStudentContext(buildSystemInstruction(resolvedSubject), profile),
       contents: [
         {
@@ -224,14 +272,14 @@ export async function generatePlacement({ subject = 'english', profile, apiKey, 
 
     const shuffled = shuffleQuestions(questions);
     const now = Date.now();
-    const token = sign({
+    const token = await sign({
       v: PLACEMENT_VERSION,
       sub: resolvedSubject,
       max: maxLevelForAge(profile?.age),
       iat: now,
       exp: now + TOKEN_TTL_MS,
       a: shuffled.map((question) => question.correctIndex),
-    });
+    }, env);
 
     return {
       token,
@@ -246,8 +294,8 @@ export async function generatePlacement({ subject = 'english', profile, apiKey, 
   }
 }
 
-export function gradePlacement({ token, answers }) {
-  const payload = verify(token);
+export async function gradePlacement({ token, answers, env = process.env }) {
+  const payload = await verify(token, env);
 
   const isValidAnswers =
     Array.isArray(answers) &&

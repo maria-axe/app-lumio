@@ -170,12 +170,13 @@ NÍVEL: use o nível escolar informado no CONTEXTO DO ESTUDANTE. Se não houver 
   return { parts: [{ text: parts.join('\n\n') }] };
 }
 
-export async function generateMaterias({ subject = 'portugues', asked = [], profile, apiKey, signal }) {
+export async function generateMaterias({ subject = 'portugues', asked = [], profile, apiKey, signal, env = process.env }) {
   const materia = resolveMateria(subject);
   try {
     const quiz = await generateContent({
       apiKey,
       signal,
+      env,
       systemInstruction: appendStudentContext(buildSystemInstruction(materia, asked), profile),
       contents: [{ role: 'user', parts: [{ text: `Gere APENAS 1 exercício de ${MATERIAS[materia].label} agora. Tudo em português do Brasil. Sem áudio, sem listening, sem speaking.` }] }],
       generationConfig: {
