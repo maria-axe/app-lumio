@@ -1,6 +1,14 @@
 # Lumio
 
-Lumio — luz para o aprendizado. MVP local de estudos com IA, organizado em **quadros**. Roda sem banco de dados: estado do usuário fica no `localStorage`; conteúdo é gerado pelo Gemini, com fallback automático para Groq, através de um proxy Express.
+<p align="center">
+  <img src="frontend/public/img/logo.svg" alt="Lumio — luz para o aprendizado" width="360" />
+</p>
+
+<p align="center">
+  <strong>Luz para o aprendizado.</strong> Um MVP local de estudos com IA, organizado em <strong>quadros</strong>.
+</p>
+
+> **Resumo:** React + Express, sem banco e sem login. O perfil fica no `localStorage`; o conteúdo é gerado pelo Gemini, com fallback automático para Groq. As chaves de API ficam apenas no servidor.
 
 Quadros atuais:
 
@@ -17,48 +25,220 @@ Idiomas: Inglês, Espanhol e Francês. Nível CEFR por idioma: `A1`–`C2`, limi
 
 > Perfil do estudante (nome, idade, objetivo, escolaridade e interesses) é coletado no onboarding, salvo localmente e injetado nos prompts; o avatar faz parte do perfil, mas é apenas visual. Nada é enviado para banco externo.
 
+### Fluxo em 30 segundos
+
+```mermaid
+flowchart LR
+  A["Estudante"] --> B["Onboarding"]
+  B --> C["Home / quadros"]
+  C --> D{"É idioma?"}
+  D -- sim --> E["PlacementGate"]
+  D -- não --> F["Board"]
+  E --> F
+  F --> G["lib/api.js"]
+  G --> H["Express routes"]
+  H --> I["services + prompts"]
+  I --> J["Gemini"]
+  J -- falha ou cota --> K["Groq"]
+  F --> L["ProgressContext"]
+  L --> M[(localStorage)]
+```
+
 ---
 
 ## Sumário
 
-1. [Stack](#stack)
-2. [Estrutura de arquivos](#estrutura-de-arquivos)
-3. [Pré-requisitos e instalação](#pré-requisitos-e-instalação)
-4. [Como rodar](#como-rodar)
-5. [Arquitetura](#arquitetura)
-6. [Quadros e rotas](#quadros-e-rotas)
-7. [Onboarding e perfil](#onboarding-e-perfil)
-8. [Backend](#backend)
-9. [Frontend](#frontend)
-10. [Contrato da API](#contrato-da-api)
-11. [Persistência local](#persistência-local)
-12. [Segurança](#segurança)
-13. [Como estender](#como-estender)
-14. [Troubleshooting](#troubleshooting)
-15. [Estado atual / roadmap](#estado-atual--roadmap)
-16. [Migração React](#migração-react)
+1. [Ferramentas e stack](#ferramentas-e-stack)
+2. [Mapa do que foi feito](#mapa-do-que-foi-feito)
+3. [Roteiro de estudo](#roteiro-de-estudo)
+4. [Aprendizados React](#aprendizados-react)
+5. [Identidade visual](#identidade-visual)
+6. [Estrutura de arquivos](#estrutura-de-arquivos)
+7. [Pré-requisitos e instalação](#pré-requisitos-e-instalação)
+8. [Como rodar](#como-rodar)
+9. [Arquitetura](#arquitetura)
+10. [Quadros e rotas](#quadros-e-rotas)
+11. [Onboarding e perfil](#onboarding-e-perfil)
+12. [Backend](#backend)
+13. [Frontend](#frontend)
+14. [Contrato da API](#contrato-da-api)
+15. [Persistência local](#persistência-local)
+16. [Segurança](#segurança)
+17. [Como estender](#como-estender)
+18. [Troubleshooting](#troubleshooting)
+19. [Estado atual / roadmap](#estado-atual--roadmap)
+20. [Migração React](#migração-react)
 
 ---
 
-## Stack
+## Ferramentas e stack
 
-| Camada | Tecnologia |
+| Ferramenta | Versão / forma de uso | Papel no Lumio | Onde ver |
+|---|---|---|---|
+| Node.js | `>=20.3` — validado em `22.19.0` | runtime do backend, build do Vite e APIs nativas (`fetch`, `AbortSignal.any`) | `package.json`, `server/` |
+| Express | `^4.19.2` | API REST, `express.json`, `express.static` e rota `/board/:id` | `server/index.js` |
+| dotenv | `^16.4.5` | carrega `.env` no startup do servidor | `server/index.js` |
+| React | `^18.3.1` | interface em componentes e contexts | `frontend/src/` |
+| react-dom | `^18.3.1` | renderização no browser | `frontend/src/main.jsx` |
+| Vite | `^8.3.8` | dev server com HMR, proxy `/api` e build de produção | `frontend/vite.config.js` |
+| @vitejs/plugin-react | `^6.3.0` | JSX e Fast Refresh no Vite | `frontend/vite.config.js` |
+| Tailwind CSS | `^3.4.17` | utilitários de layout, tema claro/escuro e tokens | `frontend/tailwind.config.js` |
+| PostCSS | `^8.4.49` | pipeline CSS do Tailwind | `frontend/postcss.config.js` |
+| Autoprefixer | `^10.4.20` | compatibilidade de CSS | `frontend/postcss.config.js` |
+| Google Gemini API | REST `generativelanguage.googleapis.com/v1beta` | geração de chat, quiz, matérias, curiosidades, diálogos e placement | `server/services/gemini-client.js` |
+| Groq API | REST OpenAI-compatible `api.groq.com/openai/v1/chat/completions` | fallback quando Gemini falha ou está sem cota | `server/services/groq-client.js` |
+| Web Speech API | `speechSynthesis` | narração/ listening no navegador | `frontend/src/lib/sound.js` |
+| Web Audio API | `AudioContext` | efeitos de acerto, erro e vitória | `frontend/src/lib/sound.js` |
+| `localStorage` | API nativa | perfil, XP, níveis, tema, som e estado dos quadros | `frontend/src/lib/storage.js` |
+| `node:crypto` | `createHmac`, `timingSafeEqual` | token HMAC do teste de nível | `server/services/placement.js` |
+
+O Express serve somente o build React de `frontend/dist/`. Não há Alpine.js, CDN de frontend, banco de dados, autenticação, testes automatizados ou lint no repositório.
+
+---
+
+## Mapa do que foi feito
+
+Use esta tabela para localizar uma decisão, copiar o padrão ou estudar o porquê dela.
+
+| Tema | Onde está | O que foi feito | Como aplicar em outro projeto |
+|---|---|---|---|
+| Shell em colunas | `AppShell.jsx`, `Sidebar.jsx`, `Topbar.jsx`, `Footer.jsx` | sidebar full-height própria; topbar/footer na coluna de conteúdo; hambúrguer só no mobile | prefira `flex` com coluna lateral e coluna de conteúdo em vez de `padding-left` global |
+| Navegação sem router | `UiContext.jsx` | rotas `/` e `/board/:id` via History API (`pushState`, `popstate`) | centralize `route`/`activeBoard` num context e sincronize com a URL |
+| Onboarding adaptativo | `OnboardingOverlay.jsx`, `student-context.js` | perfil normalizado e injetado em todos os prompts | sanitize e transforme perfil em contexto antes de montar o prompt |
+| Teste de nível | `PlacementGate.jsx`, `PlacementContext.jsx`, `routes/placement.js`, `services/placement.js` | 6 perguntas `A1`–`C2`, token HMAC sem gabarito, clamp por idade | nunca envie respostas corretas ao cliente; use HMAC + TTL |
+| Registro de boards | `constants.js`, `BoardPage.jsx` | `CORE_BOARDS` com `id`, `kind` e `subject`; renderização por `kind` | troque `if/else` solto por registry + switch único |
+| Chamadas de IA | `api.js`, `routes/*`, `services/*`, `gemini-client.js`, `groq-client.js` | fetch centralizado, validação HTTP, prompt/schema/parser no service, fallback Gemini → Groq | mantenha controller/route fino e regra de negócio no service |
+| Qualidade das perguntas | `question-check.js` | validação de acento, sinal de `?` e redação antes de responder | trate saída de LLM como dado não confiável |
+| Memória sem IA | `memory-decks.js`, `WordArt.jsx`, `MemoriaBoard.jsx` | decks locais, pares com mesmo SVG nas duas cartas, rotação via `memory_seen` | use estado local quando a rodada não precisar de geração |
+| XP e metas | `ProgressContext.jsx` | progresso agregado por `subject`, datas locais, bônus de rodada | separe estado por domínio e agregue no getter |
+| Áudio e voz | `sound.js` | Web Audio para efeitos, `speechSynthesis` para narração | isole APIs do navegador num módulo e exponha funções simples |
+| Tema e acessibilidade | `styles.css`, `tailwind.config.js` | `darkMode: 'class'`, tokens de acento e `prefers-reduced-motion` | coloque tokens em CSS e não espalhe cores hardcoded |
+| Segurança | `server/index.js`, `routes/*`, `prompts.js` | whitelist, limites de payload/string, chaves só no servidor | valide na borda e nunca confie no payload do cliente |
+
+---
+
+## Roteiro de estudo
+
+1. **Suba o projeto**: `npm install`, `cp .env.example .env`, preencha uma chave e rode `npm run server:dev` + `npm run dev`.
+2. **Entenda o mapa**: leia `frontend/src/lib/constants.js` e veja os seis boards em `CORE_BOARDS`.
+3. **Siga uma requisição**: de `ChatBoard.jsx` → `lib/api.js` → `server/routes/chat.js` → `server/services/gemini.js` → `gemini-client.js`.
+4. **Estude o gate**: leia `PlacementGate.jsx`, depois `POST /api/placement/start` e `/finish`. Compare o token com o gabarito que **não** vai para o browser.
+5. **Estude resiliência**: em `gemini-client.js`, observe retry, timeout, abort e a passagem para `groq-client.js`.
+6. **Estude estado local**: em `storage.js` e `ProgressContext.jsx`, veja leitura tolerante a falha e agregação por `subject`.
+7. **Estude o jogo local**: em `memory-decks.js`, veja como `memory_seen` evita repetir pares sem chamar a API.
+8. **Aplique**: escolha um item do [mapa acima](#mapa-do-que-foi-feito) e tente reproduzir o padrão em um componente novo.
+
+---
+
+## Aprendizados React
+
+Tudo nesta seção acontece no frontend. O backend apenas recebe JSON e devolve JSON; a interface decide estado, navegação e experiência.
+
+### Árvore de componentes
+
+```text
+main.jsx
+└── AppProviders
+    ├── OnboardingProvider
+    ├── UiProvider
+    ├── PlacementProvider
+    └── ProgressProvider
+        └── App
+            └── AppShell
+                ├── Sidebar              # desktop
+                ├── coluna de conteúdo
+                │   ├── Topbar
+                │   ├── <main>
+                │   │   ├── HomePage
+                │   │   └── BoardPage
+                │   │       ├── ClearBoardButton
+                │   │       └── board por kind:
+                │   │           ChatBoard, QuizBoard, MateriasBoard,
+                │   │           CuriosidadesBoard, DialogosBoard, MemoriaBoard
+                │   │               └── BoardUi / WordArt
+                │   └── Footer
+                ├── MobileMenu           # mobile
+                ├── PlacementGate        # chat, quiz, dialogos, memoria
+                └── OnboardingOverlay
+```
+
+### Rotas sem React Router
+
+| URL | Estado no `UiContext` | Componente |
+|---|---|---|
+| `/` | `route === 'home'` | `HomePage` |
+| `/board/chat` | `activeBoard.id === 'chat'` | `ChatBoard` |
+| `/board/quiz` | `activeBoard.id === 'quiz'` | `QuizBoard` |
+| `/board/materias` | `activeBoard.id === 'materias'` | `MateriasBoard` |
+| `/board/curiosidades` | `activeBoard.id === 'curiosidades'` | `CuriosidadesBoard` |
+| `/board/dialogos` | `activeBoard.id === 'dialogos'` | `DialogosBoard` |
+| `/board/memoria` | `activeBoard.id === 'memoria'` | `MemoriaBoard` |
+
+`openBoard()`, `goHome()` e `closeBoard()` chamam `history.pushState()`; `syncFromLocation()` escuta `popstate`. O Express só conhece explicitamente `GET /board/:id`; todo o resto é SPA navegada no cliente.
+
+### Contexts e hooks próprios
+
+`AppProviders.jsx` compõe os quatro providers. Cada context expõe um hook próprio baseado em `useContext`:
+
+| Hook | Arquivo | Responsabilidade |
+|---|---|---|
+| `useUi()` | `contexts/UiContext.jsx` | boards, rota, `activeBoard`, tema, som, sidebar, nível e `subject` por board |
+| `useProgress()` | `contexts/ProgressContext.jsx` | XP, ofensiva, meta diária e agregados por `subject` |
+| `useOnboarding()` | `contexts/OnboardingContext.jsx` | etapas, formulário, perfil, validação e preview do avatar |
+| `usePlacement()` | `contexts/PlacementContext.jsx` | teste de nível por idioma, gate e resultado persistido |
+
+### Hooks React usados de verdade
+
+| Hook | Uso no Lumio |
 |---|---|
-| Backend | Node.js + Express 4 (ESM) |
-| Frontend | React 18 + Vite 8 + Tailwind 3 via PostCSS (único frontend) |
-| IA | Google Gemini (`generativelanguage.googleapis.com/v1beta`), com fallback para Groq (`api.groq.com/openai/v1/chat/completions`) |
-| Áudio | Web Audio API + Web Speech API (`speechSynthesis`) |
-| Persistência | `localStorage` do navegador |
-| Config | `dotenv` |
+| `useState` | formulários, rodadas, loading, erros e flags de UI |
+| `useEffect` | sincronizar URL, persistir estado, iniciar boards e limpar requests |
+| `useRef` | guardar `AbortController` e refs de auto-start sob `StrictMode` |
+| `useCallback` | estabilizar handlers passados para efeitos e componentes filhos |
+| `useMemo` | derivar listas e valores sem recalcular a cada render |
+| `useContext` | consumido pelos hooks `useUi`, `useProgress`, `useOnboarding` e `usePlacement` |
+| `React.StrictMode` | expõe efeitos impuros; por isso o auto-start usa ref |
 
-O Express serve somente o build React de `frontend/dist/`. Não há Alpine.js, CDN de frontend nem UI em `public/`. Sem banco e sem testes automatizados no repositório.
+Não há `useReducer`, React Router, Redux nem biblioteca externa de estado.
+
+### Padrões para copiar
+
+| Padrão | Onde ver | Por que usar |
+|---|---|---|
+| Registry em vez de condicionais soltos | `lib/constants.js` + `BoardPage.jsx` | adicionar board vira dados + um `case`, não uma cadeia de `if` |
+| Context por domínio | `contexts/*.jsx` | evita um context único com responsabilidades misturadas |
+| `lib/` como camada de borda | `api.js`, `storage.js`, `sound.js` | componentes não sabem detalhes de `fetch`, `localStorage` ou áudio |
+| Refs para auto-start | boards com `startRoundRef` | `StrictMode` não dispara duas requisições |
+| Getters derivados | `level()`, `goalProgress`, `continueBoard` | estado mínimo; valores calculados não ficam dessincronizados |
+| Composição de shell | `AppShell.jsx` | sidebar, topbar, main e footer evoluem separadamente |
+| Texto, não HTML | boards renderizam respostas da IA como texto | sem `dangerouslySetInnerHTML`; XSS fica fora |
+
+---
+
+## Identidade visual
+
+<p align="center">
+  <img src="frontend/public/img/logo-dark.svg" alt="Lumio — versão para tema escuro" width="360" />
+</p>
+
+| Faixa etária | Mascote | Uso no app |
+|---|---|---|
+| 3–10 anos | <img src="frontend/public/img/mascot-baby.svg" alt="Mascote baby do Lumio" width="110" /> | onboarding e boards para crianças |
+| 11–17 anos | <img src="frontend/public/img/mascot-teen.svg" alt="Mascote adolescente do Lumio" width="110" /> | onboarding e boards para adolescentes |
+| 18+ | <img src="frontend/public/img/mascot.svg" alt="Mascote adulto do Lumio" width="110" /> | onboarding e boards para adultos |
+
+<p align="center">
+  <img src="frontend/public/img/app-icon.svg" alt="Ícone do Lumio" width="72" />
+</p>
+
+Os SVGs são locais e versionados em `frontend/public/img/`. Não há screenshots versionados; os assets acima são exatamente os usados pelo app.
 
 ---
 
 ## Estrutura de arquivos
 
 ```text
-projeto-estudos/
+app-lumio/
 ├── server/
 │   ├── index.js                    # bootstrap: middlewares, mounts, /board/:id
 │   ├── prompts.js                  # CEFR, SUBJECTS, resolveLevel/resolveSubject, prompts de chat/quiz
@@ -143,7 +323,7 @@ projeto-estudos/
 └── package-lock.json
 ```
 
-`logo.svg` e `logo-dark.svg` existem, mas não são referenciados pelo código atual. Favicon e ícone do app usam `app-icon.svg`.
+`logo.svg` e `logo-dark.svg` são usados neste README. O app usa `app-icon.svg` como favicon e ícone; os mascotes são escolhidos pela faixa etária do perfil.
 
 ---
 
@@ -158,6 +338,8 @@ npm install
 cp .env.example .env
 # preencha GEMINI_API_KEY e/ou GROQ_API_KEY em .env
 ```
+
+`.env` está no `.gitignore`; `.env.example` é versionado e serve apenas como modelo.
 
 `.env`:
 
@@ -740,7 +922,7 @@ Edite `OBJECTIVE_LABELS`, `SCHOOLING_LABELS`, `INTEREST_LABELS`, `AGE_BANDS` em 
 
 ---
 
-## Frontend React
+## Migração React
 
 O frontend React é o único frontend do projeto.
 
