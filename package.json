@@ -10,11 +10,11 @@
     "build": "npm run frontend:build",
     "preview": "npm run frontend:preview",
     "frontend:dev": "npm --prefix frontend run dev",
-    "frontend:build": "npm --prefix frontend run build",
+    "frontend:build": "npm run install:frontend && npm --prefix frontend run build",
     "frontend:preview": "npm --prefix frontend run preview",
     "worker:dev": "wrangler dev",
     "install:frontend": "npm ci --prefix frontend",
-    "deploy:cloudflare": "npm run install:frontend && npm run frontend:build && wrangler deploy"
+    "deploy:cloudflare": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

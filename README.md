@@ -395,7 +395,7 @@ npm run worker:dev        # testa local com as Workers bindings
 npm run deploy:cloudflare # npm ci no frontend + build + wrangler deploy
 ```
 
-Se aparecer `vite: not found`, rode `npm run install:frontend`. O script de deploy já faz isso.
+Se aparecer `vite: not found`, rode `npm run install:frontend`. `npm run build` e `npm run deploy:cloudflare` já instalam as dependências do frontend antes de compilar.
 
 `.env` continua apenas local. No Worker, segredos vêm de `env`, nunca de `process.env` ou de variáveis `VITE_*`. O Express em `server/` continua funcionando normalmente para `npm start`.
 
