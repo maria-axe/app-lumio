@@ -277,7 +277,10 @@ app-lumio/
 │   │   ├── manifest.webmanifest    # instalação PWA
 │   │   ├── sw.js                   # cache do casco da app; nunca /api/*
 │   │   └── img/
-│   │       ├── app-icon.svg        # favicon + ícone do app
+│   │       ├── app-icon.svg        # favicon do app
+│   │       ├── splash-icon.svg     # base do splash nativo: fundo claro + Lumi grande
+│   │       ├── icon-192.png        # ícone PWA gerado do splash-icon.svg
+│   │       ├── icon-512.png        # ícone PWA gerado do splash-icon.svg
 │   │       ├── logo.svg            # wordmark claro (asset disponível)
 │   │       ├── logo-dark.svg       # wordmark escuro (asset disponível)
 │   │       ├── mascot.svg          # Lumi adulto
@@ -411,7 +414,7 @@ Se aparecer `vite: not found`, rode `npm run install:frontend`. `npm run build` 
 
 O app pode ser instalado na tela inicial sem Google Play. `frontend/public/manifest.webmanifest` traz nome, ícones e `display: standalone`; `frontend/public/sw.js` guarda apenas o casco da aplicação. Rotas `/api/*` nunca entram no cache, então respostas de IA e tokens do placement continuam sempre frescos.
 
-No celular, abra a URL do Worker e use `Adicionar à tela inicial` (Safari) ou `Instalar app` (Chrome). No Chrome Android, `beforeinstallprompt` é capturado e vira uma faixa compacta no topo com botão direto de instalação; `Agora não` adia por 7 dias. O splash nativo do Chrome usa o ícone e `background_color` do manifest; em seguida `SplashScreen.jsx` faz a transição animada com Lumi, logo e barra de progresso.
+No celular, abra a URL do Worker e use `Adicionar à tela inicial` (Safari) ou `Instalar app` (Chrome). No Chrome Android, `beforeinstallprompt` é capturado e vira uma faixa compacta no topo com botão direto de instalação; `Agora não` adia por 7 dias. O splash nativo do Chrome usa o ícone e `background_color` do manifest; `icon-192.png` e `icon-512.png` vêm de `splash-icon.svg`, com fundo claro e Lumi grande. Em seguida `SplashScreen.jsx` faz a transição animada com logo e barra de progresso.
 
 Não há scripts de `test` ou `lint`.
 
