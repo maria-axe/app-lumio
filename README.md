@@ -106,6 +106,7 @@ Use esta tabela para localizar uma decisão, copiar o padrão ou estudar o porqu
 | Navegação sem router | `UiContext.jsx` | rotas `/` e `/board/:id` via History API (`pushState`, `popstate`) | centralize `route`/`activeBoard` num context e sincronize com a URL |
 | Onboarding adaptativo | `OnboardingOverlay.jsx`, `student-context.js` | perfil normalizado e injetado em todos os prompts | sanitize e transforme perfil em contexto antes de montar o prompt |
 | Teste de nível | `PlacementGate.jsx`, `PlacementContext.jsx`, `routes/placement.js`, `services/placement.js` | 6 perguntas `A1`–`C2`, token HMAC sem gabarito, clamp por idade | nunca envie respostas corretas ao cliente; use HMAC + TTL |
+| Instalação PWA | `InstallPrompt.jsx`, `installPrompt.js` | captura `beforeinstallprompt`, abre popup e chama `prompt()` no clique; `Agora não` adia 7 dias | guarde o evento e só chame `prompt()` em resposta a gesto do usuário |
 | Registro de boards | `constants.js`, `BoardPage.jsx` | `CORE_BOARDS` com `id`, `kind` e `subject`; renderização por `kind` | troque `if/else` solto por registry + switch único |
 | Chamadas de IA | `api.js`, `routes/*`, `services/*`, `gemini-client.js`, `groq-client.js` | fetch centralizado, validação HTTP, prompt/schema/parser no service, fallback Gemini → Groq | mantenha controller/route fino e regra de negócio no service |
 | Qualidade das perguntas | `question-check.js` | validação de acento, sinal de `?` e redação antes de responder | trate saída de LLM como dado não confiável |
@@ -293,6 +294,7 @@ app-lumio/
 │       │   ├── sound.js            # Web Audio + Web Speech API
 │       │   ├── placement.js        # regras do teste de nível
 │       │   ├── memory-decks.js     # decks locais do jogo de memória
+│       │   ├── installPrompt.js    # beforeinstallprompt + popup de instalação
 │       │   └── storage.js          # wrappers do localStorage
 │       ├── contexts/
 │       │   ├── AppProviders.jsx
@@ -307,6 +309,7 @@ app-lumio/
 │           ├── MobileMenu.jsx
 │           ├── Footer.jsx
 │           ├── HomePage.jsx
+│           ├── InstallPrompt.jsx
 │           ├── OnboardingOverlay.jsx
 │           ├── PlacementGate.jsx
 │           ├── BoardPage.jsx
@@ -406,7 +409,7 @@ Se aparecer `vite: not found`, rode `npm run install:frontend`. `npm run build` 
 
 O app pode ser instalado na tela inicial sem Google Play. `frontend/public/manifest.webmanifest` traz nome, ícones e `display: standalone`; `frontend/public/sw.js` guarda apenas o casco da aplicação. Rotas `/api/*` nunca entram no cache, então respostas de IA e tokens do placement continuam sempre frescos.
 
-No celular, abra a URL do Worker e use `Adicionar à tela inicial` (Safari) ou `Instalar app` (Chrome).
+No celular, abra a URL do Worker e use `Adicionar à tela inicial` (Safari) ou `Instalar app` (Chrome). No Chrome Android, `beforeinstallprompt` é capturado e vira um popup com botão direto de instalação; `Agora não` adia por 7 dias.
 
 Não há scripts de `test` ou `lint`.
 
@@ -960,9 +963,9 @@ Edite `OBJECTIVE_LABELS`, `SCHOOLING_LABELS`, `INTEREST_LABELS`, `AGE_BANDS` em 
 O frontend React é o único frontend do projeto.
 
 - `frontend/` contém Vite 8, React 18, Tailwind 3 via PostCSS e os SVGs do app.
-- `src/lib/` tem `storage.js`, `placement.js`, `memory-decks.js`, `avatar.js`, `profile.js`, `constants.js`, `api.js` e `sound.js`.
+- `src/lib/` tem `storage.js`, `placement.js`, `memory-decks.js`, `avatar.js`, `profile.js`, `constants.js`, `api.js`, `sound.js` e `installPrompt.js`.
 - `src/contexts/` tem `OnboardingProvider`, `UiProvider`, `PlacementProvider` e `ProgressProvider`.
-- `src/components/` tem `AppShell`, `Sidebar`, `Topbar`, `MobileMenu`, `Footer`, `OnboardingOverlay`, `PlacementGate`, `HomePage`, `BoardPage`, `BoardUi`, `Icons`, `ClearBoardButton`, `WordArt` e os seis boards.
+- `src/components/` tem `AppShell`, `Sidebar`, `Topbar`, `MobileMenu`, `Footer`, `OnboardingOverlay`, `PlacementGate`, `InstallPrompt`, `HomePage`, `BoardPage`, `BoardUi`, `Icons`, `ClearBoardButton`, `WordArt` e os seis boards.
 - `src/styles.css` traz os tokens de tema, acentos dos boards, animações e estados de reduced motion.
 - `npm run dev` sobe o Vite em `5173` e faz proxy de `/api` para o Express em `3000` (`npm run server:dev`).
 - `npm run frontend:build` gera `frontend/dist/`; `npm start` serve esse build.

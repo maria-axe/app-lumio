@@ -5,6 +5,7 @@ import { useUi } from '../contexts/UiContext.jsx';
 import BoardPage from './BoardPage.jsx';
 import Footer from './Footer.jsx';
 import HomePage from './HomePage.jsx';
+import InstallPrompt from './InstallPrompt.jsx';
 import MobileMenu from './MobileMenu.jsx';
 import OnboardingOverlay from './OnboardingOverlay.jsx';
 import PlacementGate from './PlacementGate.jsx';
@@ -45,6 +46,7 @@ export default function AppShell() {
       <MobileMenu />
       <PlacementGate />
       <OnboardingOverlay />
+      <InstallPrompt enabled={!onboarding.visible && !placement.visible && !ui.mobileMenuOpen} />
     </div>
   );
 }

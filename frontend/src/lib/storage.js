@@ -11,6 +11,7 @@ const BOARDS_KEY = 'boards_list';
 const PLACEMENT_KEY = 'placement';
 const MEMORY_BEST_KEY = 'memory_best';
 const MEMORY_SEEN_KEY = 'memory_seen';
+const INSTALL_DISMISSED_KEY = 'install_dismissed_at';
 
 export const storage = {
   loadHistory(subject = 'english') {
@@ -202,6 +203,21 @@ export const storage = {
   savePlacement(records) {
     try {
       localStorage.setItem(PLACEMENT_KEY, JSON.stringify(records));
+    } catch {}
+  },
+
+  loadInstallDismissedAt() {
+    try {
+      const raw = localStorage.getItem(INSTALL_DISMISSED_KEY);
+      return raw ? Number(raw) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  },
+
+  saveInstallDismissedAt() {
+    try {
+      localStorage.setItem(INSTALL_DISMISSED_KEY, String(Date.now()));
     } catch {}
   },
 };
