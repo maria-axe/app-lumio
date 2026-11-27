@@ -271,13 +271,16 @@ app-lumio/
 │   ├── postcss.config.js
 │   ├── package.json                # scripts dev/build/preview do Vite
 │   ├── package-lock.json
-│   ├── public/img/
-│   │   ├── app-icon.svg            # favicon + ícone do app
-│   │   ├── logo.svg                # wordmark claro (asset disponível)
-│   │   ├── logo-dark.svg           # wordmark escuro (asset disponível)
-│   │   ├── mascot.svg              # Lumi adulto
-│   │   ├── mascot-baby.svg         # Lumi 3–10 anos
-│   │   └── mascot-teen.svg         # Lumi 11–17 anos
+│   ├── public/
+│   │   ├── manifest.webmanifest    # instalação PWA
+│   │   ├── sw.js                   # cache do casco da app; nunca /api/*
+│   │   └── img/
+│   │       ├── app-icon.svg        # favicon + ícone do app
+│   │       ├── logo.svg            # wordmark claro (asset disponível)
+│   │       ├── logo-dark.svg       # wordmark escuro (asset disponível)
+│   │       ├── mascot.svg          # Lumi adulto
+│   │       ├── mascot-baby.svg     # Lumi 3–10 anos
+│   │       └── mascot-teen.svg     # Lumi 11–17 anos
 │   └── src/
 │       ├── main.jsx
 │       ├── App.jsx                 # renderiza AppShell
@@ -398,6 +401,12 @@ npm run deploy:cloudflare # npm ci no frontend + build + wrangler deploy
 Se aparecer `vite: not found`, rode `npm run install:frontend`. `npm run build` e `npm run deploy:cloudflare` já instalam as dependências do frontend antes de compilar.
 
 `.env` continua apenas local. No Worker, segredos vêm de `env`, nunca de `process.env` ou de variáveis `VITE_*`. O Express em `server/` continua funcionando normalmente para `npm start`.
+
+### PWA no celular
+
+O app pode ser instalado na tela inicial sem Google Play. `frontend/public/manifest.webmanifest` traz nome, ícones e `display: standalone`; `frontend/public/sw.js` guarda apenas o casco da aplicação. Rotas `/api/*` nunca entram no cache, então respostas de IA e tokens do placement continuam sempre frescos.
+
+No celular, abra a URL do Worker e use `Adicionar à tela inicial` (Safari) ou `Instalar app` (Chrome).
 
 Não há scripts de `test` ou `lint`.
 
