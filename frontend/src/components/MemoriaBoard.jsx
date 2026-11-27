@@ -286,7 +286,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
         </div>
       </header>
 
-      <RoundProgress subject={subject} current={matchedPairs.length} total={totalPairs} label={subjectMeta.label} />
+      <RoundProgress subject={subject} current={matchedPairs.length} answered={matchedPairs.length} total={totalPairs} label={subjectMeta.label} />
 
       <main className="flex-1 overflow-y-auto scroll-area px-4 sm:px-5 py-4 bg-[#FCFCFC] dark:bg-duo-bg-dark transition-colors">
         <div className="mx-auto w-full max-w-3xl">

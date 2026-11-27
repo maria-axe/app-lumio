@@ -39,6 +39,7 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [current, setCurrent] = useState(0);
+  const [answered, setAnswered] = useState(0);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
   const [roundXp, setRoundXp] = useState(0);
@@ -111,6 +112,7 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
 
   const startRound = useCallback(() => {
     setCurrent(0);
+    setAnswered(0);
     setScore(0);
     setRoundXp(0);
     setXpGain(0);
@@ -158,6 +160,7 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
   const check = () => {
     if (selected === null || checked || loading) return;
     setChecked(true);
+    setAnswered((value) => value + 1);
     stopSpeaking();
     if (isCorrect) {
       setScore((value) => value + 1);
@@ -243,7 +246,7 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
         </div>
       </header>
 
-      <RoundProgress subject={subject} current={current} total={ROUND_SIZE} label={subjectMeta.label} />
+      <RoundProgress subject={subject} current={current} answered={answered} total={ROUND_SIZE} label={subjectMeta.label} />
 
       <main className="flex-1 overflow-y-auto scroll-area px-4 sm:px-5 py-4 bg-[#FCFCFC] dark:bg-duo-bg-dark transition-colors">
         <div className="mx-auto w-full max-w-3xl h-full flex flex-col">

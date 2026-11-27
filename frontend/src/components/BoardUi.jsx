@@ -64,11 +64,12 @@ export function MascotBubble({ mascot, children }) {
   );
 }
 
-export function RoundProgress({ subject, current, total, label, barClass = 'bg-duo-blue' }) {
+export function RoundProgress({ subject, answered = 0, total, label, barClass = 'bg-duo-blue' }) {
   const progress = useProgress();
   const barRef = useRef(null);
   const goalReached = progress.subjectGoalReached(subject);
   const state = progress.state(subject);
+  const done = Math.min(answered, total);
 
   useEffect(() => {
     const element = barRef.current;
@@ -76,7 +77,7 @@ export function RoundProgress({ subject, current, total, label, barClass = 'bg-d
     element.classList.remove('bar-pop');
     void element.offsetWidth;
     element.classList.add('bar-pop');
-  }, [current]);
+  }, [done]);
 
   return (
     <div className="px-4 sm:px-5 py-2.5 border-b-2 border-duo-border dark:border-duo-border-dark transition-colors">
@@ -84,13 +85,20 @@ export function RoundProgress({ subject, current, total, label, barClass = 'bg-d
         <span className={goalReached ? 'text-duo-green' : ''} title={`Meta diária de ${label}`}>
           Meta {state.todayXp}/{state.dailyGoal} XP
         </span>
-        <span>{Math.min(current, total)} / {total}</span>
+        <span>{done} / {total}</span>
       </div>
-      <div className={`h-3.5 rounded-full bg-duo-border dark:bg-duo-border-dark overflow-hidden transition-shadow duration-300 ${goalReached ? 'bar-goal-glow' : ''}`}>
+      <div
+        className={`h-3.5 rounded-full bg-duo-border dark:bg-duo-border-dark overflow-hidden transition-shadow duration-300 ${goalReached ? 'bar-goal-glow' : ''}`}
+        role="progressbar"
+        aria-label={`Progresso de ${label}`}
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={done}
+      >
         <div
           ref={barRef}
-          className={`bar-fill h-full rounded-full transition-[width,background-color] duration-500 ease-out ${goalReached ? 'bg-duo-green' : barClass}`}
-          style={{ width: `${(Math.min(current, total) / total) * 100}%` }}
+          className={`bar-fill h-full rounded-full transition-[width,background-color] duration-500 ease-out ${done > 0 || goalReached ? 'bg-duo-green' : barClass}`}
+          style={{ width: `${(done / total) * 100}%` }}
         />
       </div>
     </div>

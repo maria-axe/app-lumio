@@ -345,7 +345,7 @@ export default function DialogosBoard({ subject: initialSubject, clearSignal = 0
         </div>
       </header>
 
-      <RoundProgress subject="dialogos" current={current} total={ROUND_SIZE} label={subjectMeta.label} barClass="bg-[#00A6A6]" />
+      <RoundProgress subject="dialogos" current={current} answered={answered} total={ROUND_SIZE} label={subjectMeta.label} barClass="bg-[#00A6A6]" />
 
       <main className="flex-1 overflow-y-auto scroll-area px-4 sm:px-5 py-4 bg-[#FCFCFC] dark:bg-duo-bg-dark transition-colors">
         <div className="mx-auto w-full max-w-3xl space-y-4">

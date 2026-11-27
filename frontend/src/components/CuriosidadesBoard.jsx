@@ -146,13 +146,20 @@ export default function CuriosidadesBoard({ clearSignal = 0 }) {
                   <span className="text-[10px] font-extrabold uppercase tracking-wide text-duo-blue">{category}</span>
                 )}
                 <span className="text-[11px] font-bold text-duo-text/50 dark:text-duo-text-dark/50 ml-auto">
-                  Pergunta {Math.min(current, ROUND_SIZE)}/{ROUND_SIZE} · {score} acertos
+                  {answered}/{ROUND_SIZE} respondidas · {score} acertos
                 </span>
               </div>
-              <div className="h-3.5 rounded-full bg-duo-border dark:bg-duo-border-dark overflow-hidden transition-shadow duration-300">
+              <div
+                className="h-3.5 rounded-full bg-duo-border dark:bg-duo-border-dark overflow-hidden transition-shadow duration-300"
+                role="progressbar"
+                aria-label="Progresso de curiosidades"
+                aria-valuemin={0}
+                aria-valuemax={ROUND_SIZE}
+                aria-valuenow={answered}
+              >
                 <div
-                  className="bar-fill h-full rounded-full bg-duo-blue transition-[width] duration-500 ease-out"
-                  style={{ width: `${(Math.min(current, ROUND_SIZE) / ROUND_SIZE) * 100}%` }}
+                  className={`bar-fill h-full rounded-full transition-[width,background-color] duration-500 ease-out ${answered > 0 ? 'bg-duo-green' : 'bg-duo-blue'}`}
+                  style={{ width: `${(answered / ROUND_SIZE) * 100}%` }}
                 />
               </div>
             </div>
