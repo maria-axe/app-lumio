@@ -74,6 +74,8 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
   const subjectMeta = ui.subject(subject);
   const key = memoryBestKey(subject, level);
   const totalPairs = MEMORY_PAIR_COUNTS[level] ?? MEMORY_PAIR_COUNTS.B1;
+  const boardRows = Math.ceil((totalPairs * 2) / 4);
+  const gridRowsClass = boardRows === 3 ? 'grid-rows-3' : 'grid-rows-4';
 
   const [cards, setCards] = useState(() => createRound(subject, level, key));
   const [selectedIds, setSelectedIds] = useState([]);
@@ -230,7 +232,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
 
   return (
     <div className="flex flex-col min-h-0 flex-1">
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-3 sm:px-5 py-3 border-b-2 border-duo-border dark:border-duo-border-dark">
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-3 sm:px-5 py-2 sm:py-3 border-b-2 border-duo-border dark:border-duo-border-dark">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-duo-blue/15 border-2 border-duo-blue/30 flex items-center justify-center overflow-hidden shrink-0">
             <img src={onboarding.mascot} alt="" width="36" height="36" className="w-7 h-7 mascot" />
@@ -286,10 +288,10 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
         </div>
       </header>
 
-      <RoundProgress subject={subject} current={matchedPairs.length} answered={matchedPairs.length} total={totalPairs} label={subjectMeta.label} />
+      <RoundProgress subject={subject} current={matchedPairs.length} answered={matchedPairs.length} total={totalPairs} label={subjectMeta.label} compact />
 
-      <main className="flex-1 overflow-y-auto scroll-area px-4 sm:px-5 py-4 bg-[#FCFCFC] dark:bg-duo-bg-dark transition-colors">
-        <div className="mx-auto w-full max-w-3xl">
+      <main className={`flex-1 min-h-0 scroll-area px-2 sm:px-5 py-2 sm:py-4 bg-[#FCFCFC] dark:bg-duo-bg-dark transition-colors ${finished ? 'overflow-y-auto' : 'overflow-hidden sm:overflow-y-auto'}`}>
+        <div className={`mx-auto w-full max-w-3xl ${finished ? '' : 'flex h-full min-h-0 flex-col'}`}>
           {finished ? (
             <MemoryResult
               attempts={attempts}
@@ -301,12 +303,12 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
             />
           ) : (
             <>
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] font-extrabold text-duo-text/50 dark:text-duo-text-dark/50">
+              <div className="mb-2 sm:mb-3 flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-[11px] font-extrabold text-duo-text/50 dark:text-duo-text-dark/50">
                 <span>{matchedPairs.length} / {totalPairs} pares</span>
                 <span>{attempts} tentativas · {formatTime(seconds)}</span>
-                {best && <span>Melhor: {best.attempts} tentativas · {formatTime(best.seconds)}</span>}
+                {best && <span className="hidden sm:inline">Melhor: {best.attempts} tentativas · {formatTime(best.seconds)}</span>}
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 justify-items-center">
+              <div className={`grid grid-cols-4 ${gridRowsClass} sm:grid-rows-none gap-2 sm:gap-4 justify-items-center flex-1 min-h-0`}>
                 {cards.map((card) => {
                   const matched = matchedRef.current.includes(card.pairId);
                   const revealed = selectedIds.includes(card.id) || matched;
@@ -320,7 +322,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
                       disabled={revealed || finished || selectionRef.current.length >= 2}
                       aria-label={label}
                       aria-pressed={revealed}
-                      className={`btn-3d relative w-full min-h-[116px] sm:min-h-[136px] rounded-2xl border-2 border-b-4 px-2 py-3 text-center text-xs sm:text-sm font-extrabold break-words transition ${
+                      className={`btn-3d relative w-full min-w-0 h-full min-h-0 overflow-hidden sm:h-auto sm:min-h-[120px] rounded-xl sm:rounded-2xl border-2 border-b-4 px-1 py-1 sm:px-2 sm:py-3 text-center text-[10px] sm:text-sm font-extrabold leading-[1.1] sm:leading-tight break-words touch-manipulation select-none transition ${
                         matched
                           ? 'border-duo-green bg-duo-green/10 text-duo-green border-b-duo-green'
                           : revealed
@@ -329,21 +331,23 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
                       } disabled:cursor-default`}
                     >
                       {revealed ? (
-                        <span className="flex flex-col items-center justify-center gap-1.5 w-full">
-                          <WordArt
-                            term={card.side === 'term' ? card.text : card.matchText}
-                            className="w-11 h-11 sm:w-14 sm:h-14 shrink-0"
-                          />
-                          <span>{card.text}</span>
+                        <span className="flex flex-col items-center justify-center gap-1 sm:gap-1.5 w-full min-w-0">
+                          <span className="hidden sm:block">
+                            <WordArt
+                              term={card.side === 'term' ? card.text : card.matchText}
+                              className="w-12 h-12 shrink-0"
+                            />
+                          </span>
+                          <span className="w-full">{card.text}</span>
                         </span>
                       ) : (
-                        <span className="text-2xl font-black">?</span>
+                        <span className="text-lg sm:text-2xl font-black">?</span>
                       )}
                     </button>
                   );
                 })}
               </div>
-              <p className="mt-3 text-center text-xs font-bold text-duo-text/50 dark:text-duo-text-dark/50">
+              <p className="hidden sm:block mt-3 text-center text-xs font-bold text-duo-text/50 dark:text-duo-text-dark/50">
                 Toque em duas cartas para encontrar o par. Ao virar uma palavra, o app a pronuncia se o som estiver ativo.
               </p>
             </>

@@ -494,7 +494,7 @@ A topbar tem altura fixa `h-16` (`Topbar.jsx`); o footer é flexível (`min-h-10
 | `dialogos` | 2 perguntas | `/api/dialogos` | `+10` por acerto |
 | `memoria` | 6 pares (A1/A2) ou 8 (B1–C2) | nenhuma na rodada; `/api/placement/*` no gate | `+10` por par + bônus ao concluir |
 
-`curiosidades` e `dialogos` usam esses nomes como `subject` de progresso, embora não sejam idiomas. `memoria` usa decks locais com desenhos SVG em `frontend/src/components/WordArt.jsx`; a carta no idioma-alvo e a carta em português mostram o mesmo desenho. Guarda em `memory_seen` os pares já usados por idioma/nível; ao terminar ou limpar, a próxima rodada usa pares ainda não vistos e só reinicia o ciclo quando o pool acaba. Como é board de idioma, também passa pelo `PlacementGate` antes da primeira rodada.
+`curiosidades` e `dialogos` usam esses nomes como `subject` de progresso, embora não sejam idiomas. `memoria` usa decks locais com desenhos SVG em `frontend/src/components/WordArt.jsx`; a carta no idioma-alvo e a carta em português mostram o mesmo desenho. Guarda em `memory_seen` os pares já usados por idioma/nível; ao terminar ou limpar, a próxima rodada usa pares ainda não vistos e só reinicia o ciclo quando o pool acaba. Como é board de idioma, também passa pelo `PlacementGate` antes da primeira rodada. No mobile, o tabuleiro usa 4 colunas com linhas flexíveis que ocupam a altura disponível, cartas compactas, barra de progresso reduzida e sem ilustração/instrução dentro da carta; a partida não rola, apenas a tela de resultado.
 
 ---
 

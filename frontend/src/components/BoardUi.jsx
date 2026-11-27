@@ -64,7 +64,7 @@ export function MascotBubble({ mascot, children }) {
   );
 }
 
-export function RoundProgress({ subject, answered = 0, total, label, barClass = 'bg-duo-blue' }) {
+export function RoundProgress({ subject, answered = 0, total, label, barClass = 'bg-duo-blue', compact = false }) {
   const progress = useProgress();
   const barRef = useRef(null);
   const goalReached = progress.subjectGoalReached(subject);
@@ -80,15 +80,15 @@ export function RoundProgress({ subject, answered = 0, total, label, barClass = 
   }, [done]);
 
   return (
-    <div className="px-4 sm:px-5 py-2.5 border-b-2 border-duo-border dark:border-duo-border-dark transition-colors">
-      <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50 mb-1.5">
+    <div className={`px-4 sm:px-5 border-b-2 border-duo-border dark:border-duo-border-dark transition-colors ${compact ? 'py-1.5 sm:py-2.5' : 'py-2.5'}`}>
+      <div className={`flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50 ${compact ? 'mb-1 sm:mb-1.5' : 'mb-1.5'}`}>
         <span className={goalReached ? 'text-duo-green' : ''} title={`Meta diária de ${label}`}>
           Meta {state.todayXp}/{state.dailyGoal} XP
         </span>
         <span>{done} / {total}</span>
       </div>
       <div
-        className={`h-3.5 rounded-full bg-duo-border dark:bg-duo-border-dark overflow-hidden transition-shadow duration-300 ${goalReached ? 'bar-goal-glow' : ''}`}
+        className={`${compact ? 'h-2.5 sm:h-3.5' : 'h-3.5'} rounded-full bg-duo-border dark:bg-duo-border-dark overflow-hidden transition-shadow duration-300 ${goalReached ? 'bar-goal-glow' : ''}`}
         role="progressbar"
         aria-label={`Progresso de ${label}`}
         aria-valuemin={0}
