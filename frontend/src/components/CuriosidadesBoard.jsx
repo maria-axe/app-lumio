@@ -143,9 +143,9 @@ export default function CuriosidadesBoard({ clearSignal = 0 }) {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between gap-2">
                 {category && (
-                  <span className="text-[10px] font-extrabold uppercase tracking-wide text-duo-blue">{category}</span>
+                  <span className="text-xs font-extrabold uppercase tracking-wide text-duo-blue">{category}</span>
                 )}
-                <span className="text-[11px] font-bold text-duo-text/50 dark:text-duo-text-dark/50 ml-auto">
+                <span className="text-xs font-bold text-duo-text/50 dark:text-duo-text-dark/50 ml-auto">
                   {answered}/{ROUND_SIZE} respondidas · {score} acertos
                 </span>
               </div>

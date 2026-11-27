@@ -54,7 +54,7 @@ export default function MobileMenu() {
           <div className="flex items-center gap-3 min-w-0">
             <img src="/img/app-icon.svg" alt="" width="40" height="40" className="w-10 h-10 rounded-xl shrink-0" />
             <div className="min-w-0">
-              <p className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">
+              <p className="text-xs font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">
                 Lumio
               </p>
               <p className="text-sm font-extrabold truncate">{onboarding.profile.name || 'estudante'}</p>
@@ -120,7 +120,7 @@ export default function MobileMenu() {
             <button
               type="button"
               onClick={ui.toggleSound}
-              className="rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2.5 flex flex-col items-center justify-center gap-1 text-[11px] font-extrabold hover:border-duo-blue hover:text-duo-blue transition-colors"
+              className="rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2.5 flex flex-col items-center justify-center gap-1 text-xs font-extrabold hover:border-duo-blue hover:text-duo-blue transition-colors"
             >
               {ui.sound ? <SoundOnIcon /> : <SoundOffIcon />}
               Som
@@ -128,7 +128,7 @@ export default function MobileMenu() {
             <button
               type="button"
               onClick={ui.toggleTheme}
-              className="rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2.5 flex flex-col items-center justify-center gap-1 text-[11px] font-extrabold hover:border-duo-blue hover:text-duo-blue transition-colors"
+              className="rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2.5 flex flex-col items-center justify-center gap-1 text-xs font-extrabold hover:border-duo-blue hover:text-duo-blue transition-colors"
             >
               {ui.theme === 'dark' ? <SunIcon /> : <MoonIcon />}
               Tema

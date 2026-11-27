@@ -56,7 +56,7 @@ export default function BoardPage() {
     <section
       ref={panelRef}
       tabIndex={-1}
-      className="w-full focus:outline-none"
+      className="w-full"
       role="region"
       aria-label={boardLabel(board.kind)}
     >
@@ -71,7 +71,7 @@ export default function BoardPage() {
               </span>
               <div className="min-w-0">
                 <h2 className="font-extrabold text-base leading-tight truncate board-accent">{boardLabel(board.kind)}</h2>
-                <p className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40 truncate">
+                <p className="text-xs font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40 truncate">
                   {subtitle}
                 </p>
               </div>
@@ -80,11 +80,11 @@ export default function BoardPage() {
             <div className="flex items-center gap-2 shrink-0">
               {board.kind !== 'materias' && (
                 <>
-                  <span className="flex items-center gap-1 text-[11px] font-extrabold text-duo-text/60 dark:text-duo-text-dark/60" title="Ofensiva">
+                  <span className="flex items-center gap-1 text-xs font-extrabold text-duo-text/60 dark:text-duo-text-dark/60" title="Ofensiva">
                     <FlameIcon className="w-3.5 h-3.5 text-duo-blue" />
                     {state.streak}
                   </span>
-                  <span className="flex items-center gap-1 text-[11px] font-extrabold text-duo-text/60 dark:text-duo-text-dark/60" title="XP do quadro">
+                  <span className="flex items-center gap-1 text-xs font-extrabold text-duo-text/60 dark:text-duo-text-dark/60" title="XP do quadro">
                     <BoltIcon className="w-3.5 h-3.5 text-duo-blue" />
                     {state.xp}
                   </span>
@@ -96,7 +96,7 @@ export default function BoardPage() {
                 onClick={ui.closeBoard}
                 title="Voltar aos quadros"
                 aria-label="Voltar aos quadros"
-                className="btn-3d flex items-center gap-1.5 rounded-xl bg-white dark:bg-duo-bg-dark border-2 border-duo-border dark:border-duo-border-dark px-2.5 py-1.5 text-[11px] font-extrabold text-duo-text/70 dark:text-duo-text-dark/70 hover:border-duo-blue hover:text-duo-blue transition-colors"
+                className="btn-3d flex items-center gap-1.5 rounded-xl bg-white dark:bg-duo-bg-dark border-2 border-duo-border dark:border-duo-border-dark px-2.5 py-1.5 text-xs font-extrabold text-duo-text/70 dark:text-duo-text-dark/70 hover:border-duo-blue hover:text-duo-blue transition-colors"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M19 12H5M12 19l-7-7 7-7" />

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProgress } from '../contexts/ProgressContext.jsx';
 
 const CONFETTI = Array.from({ length: 28 }, (_, index) => ({
@@ -51,6 +51,23 @@ export function ErrorState({ error, onRetry, teal = false }) {
   );
 }
 
+// Região existe antes da mudança de estado: o texto entra depois via effect,
+// o que garante o anúncio em leitores de tela (NVDA/VoiceOver).
+export function Announce({ message = '' }) {
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setText(message), 0);
+    return () => window.clearTimeout(id);
+  }, [message]);
+
+  return (
+    <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+      {text}
+    </p>
+  );
+}
+
 export function MascotBubble({ mascot, children }) {
   return (
     <div className="flex items-start gap-2">
@@ -81,7 +98,7 @@ export function RoundProgress({ subject, answered = 0, total, label, barClass = 
 
   return (
     <div className={`px-4 sm:px-5 border-b-2 border-duo-border dark:border-duo-border-dark transition-colors ${compact ? 'py-1.5 sm:py-2.5' : 'py-2.5'}`}>
-      <div className={`flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50 ${compact ? 'mb-1 sm:mb-1.5' : 'mb-1.5'}`}>
+      <div className={`flex items-center justify-between text-xs font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50 ${compact ? 'mb-1 sm:mb-1.5' : 'mb-1.5'}`}>
         <span className={goalReached ? 'text-duo-green' : ''} title={`Meta diária de ${label}`}>
           Meta {state.todayXp}/{state.dailyGoal} XP
         </span>
@@ -160,6 +177,10 @@ export function Feedback({
   buttonClass = primaryButton,
   noteBlock = false,
 }) {
+  const announcement = checked
+    ? `${isCorrect ? 'Correto!' : 'Quase!'}${isCorrect && xpGain > 0 ? ` +${xpGain} XP.` : ''}`
+    : '';
+
   return (
     <div
       className={`px-4 sm:px-5 py-3 border-t-2 transition-colors ${
@@ -170,6 +191,7 @@ export function Feedback({
           : 'bg-white dark:bg-duo-surface-dark border-duo-border dark:border-duo-border-dark'
       }`}
     >
+      <Announce message={announcement} />
       <div className="mx-auto w-full max-w-3xl space-y-2">
         {!checked ? (
           <button
@@ -188,14 +210,14 @@ export function Feedback({
               <span>{isCorrect ? 'Correto!' : 'Quase!'}</span>
             </div>
             {isCorrect && xpGain > 0 && (
-              <span className="inline-block text-[11px] font-extrabold text-duo-green bg-duo-green/10 border-2 border-duo-green/40 rounded-full px-2 py-0.5 xp-pop">
+              <span className="inline-block text-xs font-extrabold text-duo-green bg-duo-green/10 border-2 border-duo-green/40 rounded-full px-2 py-0.5 xp-pop">
                 +{xpGain} XP
               </span>
             )}
             {noteBlock ? (
               <div className="rounded-2xl bg-white/70 dark:bg-duo-surface-dark/70 border-2 border-duo-border dark:border-duo-border-dark px-4 py-3">
                 {noteLabel && (
-                  <p className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40 mb-1">
+                  <p className="text-xs font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40 mb-1">
                     {noteLabel}
                   </p>
                 )}
@@ -257,9 +279,11 @@ export function RoundResult({
   const progress = useProgress();
   const state = progress.state(subject);
   const goalReached = progress.subjectGoalReached(subject);
+  const announcement = `Rodada concluída! Você acertou ${score} de ${total}. +${roundXp} XP.`;
 
   return (
     <div className="relative py-10 flex flex-col items-center justify-center gap-4 text-center">
+      <Announce message={announcement} />
       {showConfetti && <Confetti />}
       <TrophyIcon />
       <div>
@@ -324,7 +348,7 @@ function TrophyIcon() {
 function Stat({ label, value, valueClass = '', withFlame = false }) {
   return (
     <div className="min-w-0 rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2">
-      <p className="text-[10px] font-extrabold uppercase leading-tight tracking-wide text-duo-text/40 dark:text-duo-text-dark/40 break-words">{label}</p>
+      <p className="text-xs font-extrabold uppercase leading-tight tracking-wide text-duo-text/40 dark:text-duo-text-dark/40 break-words">{label}</p>
       <p className={`font-extrabold ${valueClass}`}>
         {withFlame && (
           <svg className="w-4 h-4 text-duo-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

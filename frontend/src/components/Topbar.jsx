@@ -40,7 +40,7 @@ export default function Topbar() {
             className="hidden sm:block w-9 h-9 rounded-xl lg:hidden"
           />
           <div className="min-w-0">
-            <p className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">
+            <p className="text-xs font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">
               Bem-vindo de volta
             </p>
             <h1 className="font-extrabold text-base leading-tight truncate">
@@ -51,7 +51,7 @@ export default function Topbar() {
 
         <div className="flex items-center gap-2 shrink-0">
           <div className="hidden sm:flex items-center gap-1.5 rounded-xl bg-white/70 dark:bg-white/5 border-2 border-duo-blue/25 px-2.5 py-1.5" title="Meta diária">
-            <span className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">Meta</span>
+            <span className="text-xs font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">Meta</span>
             <span className="text-xs font-extrabold">
               {progress.todayXp}/{progress.dailyGoal}
             </span>

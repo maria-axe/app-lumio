@@ -10,7 +10,7 @@ import {
 } from '../lib/memory-decks.js';
 import { playCorrect, playWin, playWrong, speak, stopSpeaking } from '../lib/sound.js';
 import { storage } from '../lib/storage.js';
-import { Confetti, primaryButton, RoundProgress } from './BoardUi.jsx';
+import { Announce, Confetti, primaryButton, RoundProgress } from './BoardUi.jsx';
 import WordArt from './WordArt.jsx';
 
 const FLIP_BACK_MS = 750;
@@ -33,6 +33,9 @@ function createRound(subject, level, key) {
 function MemoryResult({ attempts, seconds, roundXp, best, totalPairs, onRestart }) {
   return (
     <div className="relative py-8 flex flex-col items-center justify-center gap-4 text-center">
+      <Announce
+        message={`Jogo concluído! Você encontrou ${totalPairs} pares em ${attempts} tentativas. +${roundXp} XP.`}
+      />
       <Confetti />
       <p className="font-extrabold text-xl">Jogo concluído!</p>
       <p className="font-bold text-sm text-duo-text/60 dark:text-duo-text-dark/60">
@@ -40,15 +43,15 @@ function MemoryResult({ attempts, seconds, roundXp, best, totalPairs, onRestart 
       </p>
       <div className="grid grid-cols-3 gap-2 w-full max-w-sm">
         <div className="rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2">
-          <p className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">Tempo</p>
+          <p className="text-xs font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">Tempo</p>
           <p className="font-extrabold text-duo-blue">{formatTime(seconds)}</p>
         </div>
         <div className="rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2">
-          <p className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">Tentativas</p>
+          <p className="text-xs font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">Tentativas</p>
           <p className="font-extrabold text-duo-green">{attempts}</p>
         </div>
         <div className="rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-2 py-2">
-          <p className="text-[10px] font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">XP</p>
+          <p className="text-xs font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">XP</p>
           <p className="font-extrabold text-duo-blue">+{roundXp}</p>
         </div>
       </div>
@@ -86,6 +89,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
   const [roundXp, setRoundXp] = useState(0);
   const [best, setBest] = useState(() => storage.loadMemoryBest()[key] ?? null);
   const [gameId, setGameId] = useState(0);
+  const [announcement, setAnnouncement] = useState('');
 
   const selectionRef = useRef([]);
   const matchedRef = useRef([]);
@@ -113,6 +117,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
     setSeconds(0);
     setFinished(false);
     setRoundXp(0);
+    setAnnouncement('');
     setBest(storage.loadMemoryBest()[key] ?? null);
     setGameId((value) => value + 1);
   }, [key, level, subject]);
@@ -210,6 +215,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
       setAttempts(newAttempts);
 
       if (firstCard.pairId === card.pairId) {
+        setAnnouncement(`Par encontrado: ${firstCard.text} e ${card.text}.`);
         playCorrect(ui.sound);
         const nextMatched = [...matchedRef.current, firstCard.pairId];
         matchedRef.current = nextMatched;
@@ -220,6 +226,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
         return;
       }
 
+      setAnnouncement(`Não é um par: ${firstCard.text} e ${card.text}.`);
       playWrong(ui.sound);
       flipTimeoutRef.current = setTimeout(() => {
         selectionRef.current = [];
@@ -232,6 +239,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
 
   return (
     <div className="flex flex-col min-h-0 flex-1">
+      <Announce message={announcement} />
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-3 sm:px-5 py-2 sm:py-3 border-b-2 border-duo-border dark:border-duo-border-dark">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-duo-blue/15 border-2 border-duo-blue/30 flex items-center justify-center overflow-hidden shrink-0">
@@ -303,7 +311,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
             />
           ) : (
             <>
-              <div className="mb-2 sm:mb-3 flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-[11px] font-extrabold text-duo-text/50 dark:text-duo-text-dark/50">
+              <div className="mb-2 sm:mb-3 flex flex-wrap items-center justify-between gap-2 text-xs font-extrabold text-duo-text/50 dark:text-duo-text-dark/50">
                 <span>{matchedPairs.length} / {totalPairs} pares</span>
                 <span>{attempts} tentativas · {formatTime(seconds)}</span>
                 {best && <span className="hidden sm:inline">Melhor: {best.attempts} tentativas · {formatTime(best.seconds)}</span>}
@@ -322,7 +330,7 @@ export default function MemoriaBoard({ subject: initialSubject, clearSignal = 0 
                       disabled={revealed || finished || selectionRef.current.length >= 2}
                       aria-label={label}
                       aria-pressed={revealed}
-                      className={`btn-3d relative w-full min-w-0 h-full min-h-0 overflow-hidden sm:h-auto sm:min-h-[120px] rounded-xl sm:rounded-2xl border-2 border-b-4 px-1 py-1 sm:px-2 sm:py-3 text-center text-[10px] sm:text-sm font-extrabold leading-[1.1] sm:leading-tight break-words touch-manipulation select-none transition ${
+                      className={`btn-3d relative w-full min-w-0 h-full min-h-0 overflow-hidden sm:h-auto sm:min-h-[120px] rounded-xl sm:rounded-2xl border-2 border-b-4 px-1 py-1 sm:px-2 sm:py-3 text-center text-xs sm:text-sm font-extrabold leading-[1.1] sm:leading-tight break-words touch-manipulation select-none transition ${
                         matched
                           ? 'border-duo-green bg-duo-green/10 text-duo-green border-b-duo-green'
                           : revealed

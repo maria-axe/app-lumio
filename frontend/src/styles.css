@@ -140,16 +140,17 @@ button:hover .word-art {
   box-shadow: 0 0 10px rgba(88, 204, 2, 0.7), 0 0 4px rgba(88, 204, 2, 0.9);
 }
 
-.board-chat { --accent: #1CB0F6; --accent-soft: rgba(28,176,246,0.12); --accent-line: rgba(28,176,246,0.38); --accent-deep: #0E8FD1; }
-.board-quiz { --accent: #CE82FF; --accent-soft: rgba(206,130,255,0.14); --accent-line: rgba(206,130,255,0.4); --accent-deep: #A560D6; }
-.board-materias { --accent: #58CC02; --accent-soft: rgba(88,204,2,0.13); --accent-line: rgba(88,204,2,0.4); --accent-deep: #4BA800; }
-.board-curiosidades { --accent: #FFB900; --accent-soft: rgba(255,185,0,0.14); --accent-line: rgba(255,185,0,0.42); --accent-deep: #D89A00; }
-.board-dialogos { --accent: #00A6A6; --accent-soft: rgba(0,166,166,0.13); --accent-line: rgba(0,166,166,0.42); --accent-deep: #007F7F; }
-.board-memoria { --accent: #FF4B4B; --accent-soft: rgba(255,75,75,0.13); --accent-line: rgba(255,75,75,0.42); --accent-deep: #D93838; }
+/* --accent-deep = cor de texto no tema claro (contraste >= 4,5:1). No tema escuro, .dark usa --accent. */
+.board-chat { --accent: #1CB0F6; --accent-soft: rgba(28,176,246,0.12); --accent-line: rgba(28,176,246,0.38); --accent-deep: #0A6FA5; }
+.board-quiz { --accent: #CE82FF; --accent-soft: rgba(206,130,255,0.14); --accent-line: rgba(206,130,255,0.4); --accent-deep: #7A3EA8; }
+.board-materias { --accent: #58CC02; --accent-soft: rgba(88,204,2,0.13); --accent-line: rgba(88,204,2,0.4); --accent-deep: #357A00; }
+.board-curiosidades { --accent: #FFB900; --accent-soft: rgba(255,185,0,0.14); --accent-line: rgba(255,185,0,0.42); --accent-deep: #8A5F00; }
+.board-dialogos { --accent: #00A6A6; --accent-soft: rgba(0,166,166,0.13); --accent-line: rgba(0,166,166,0.42); --accent-deep: #006868; }
+.board-memoria { --accent: #FF4B4B; --accent-soft: rgba(255,75,75,0.13); --accent-line: rgba(255,75,75,0.42); --accent-deep: #B82828; }
 
 .speaker-a { background: rgba(0,166,166,0.14); border-color: rgba(0,166,166,0.42); color: #007F7F; }
 .dark .speaker-a { color: #2DD4BF; }
-.speaker-b { background: rgba(28,176,246,0.12); border-color: rgba(28,176,246,0.42); color: #0E8FD1; }
+.speaker-b { background: rgba(28,176,246,0.12); border-color: rgba(28,176,246,0.42); color: #0A6FA5; }
 .dark .speaker-b { color: #7DD3FC; }
 
 .board-strip { background: linear-gradient(90deg, var(--accent), transparent 85%); }
@@ -228,4 +229,42 @@ button:hover .word-art {
   button:hover .word-art { animation: none; }
   .icon-btn svg { transition: none; }
   .splash-blob, .splash-pop, .splash-bar, .splash-shine, .confetti-piece { animation: none; }
+}
+
+/* WCAG 2.2 - 2.5.8: nenhum alvo de ponteiro menor que 24x24 px. */
+button, [role='button'], input, select, textarea {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* Contraste: textos secundarios no tema claro (opacidade 30/40/50 -> #666). */
+:root:not(.dark) .text-duo-text\/30,
+:root:not(.dark) .text-duo-text\/40,
+:root:not(.dark) .text-duo-text\/50,
+:root:not(.dark) .text-duo-text\/60 {
+  color: #666;
+}
+
+/* Contraste: textos secundarios no tema escuro (opacidade 30/40 -> #A6B4BC). */
+.dark .text-duo-text-dark\/30,
+.dark .text-duo-text-dark\/40 {
+  color: #A6B4BC;
+}
+
+/* Os acentos escureceram para dar contraste com texto branco; no tema escuro
+   eles voltam a ser claros sobre as superficies escuras. */
+.dark .text-duo-blue,
+.dark .hover\:text-duo-blue:hover { color: #7DD3FC; }
+.dark .text-duo-green { color: #8FE04A; }
+.dark .text-duo-red,
+.dark .hover\:text-duo-red:hover { color: #FF8A8A; }
+
+/* Foco visível: 3px com contraste >= 3:1, inclusive nos temas claro e escuro. */
+:where(button, a, input, select, textarea, [tabindex='0']):focus-visible {
+  outline: 3px solid #0B6FA8;
+  outline-offset: 2px;
+}
+
+.dark :where(button, a, input, select, textarea, [tabindex='0']):focus-visible {
+  outline-color: #7DD3FC;
 }

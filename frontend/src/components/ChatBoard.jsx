@@ -207,10 +207,10 @@ export default function ChatBoard({ subject: initialSubject, clearSignal = 0 }) 
             <div className="mb-2 flex items-center gap-2 rounded-2xl border-2 border-duo-red/40 bg-duo-red/10 px-3 py-2">
               <WarningIcon className="w-4 h-4 text-duo-red shrink-0" />
               <span className="text-xs font-extrabold text-duo-red flex-1">Apagar toda a conversa?</span>
-              <button type="button" onClick={clear} className="btn-action text-[11px] font-extrabold uppercase tracking-wide text-white bg-duo-red rounded-xl px-3 py-1.5 border-b-2 border-red-700 hover:brightness-105 active:border-b-0 active:translate-y-0.5 transition">
+              <button type="button" onClick={clear} className="btn-action text-xs font-extrabold uppercase tracking-wide text-white bg-duo-red rounded-xl px-3 py-1.5 border-b-2 border-red-700 hover:brightness-105 active:border-b-0 active:translate-y-0.5 transition">
                 Limpar
               </button>
-              <button type="button" onClick={cancelClear} className="text-[11px] font-extrabold uppercase tracking-wide text-duo-text/60 dark:text-duo-text-dark/60 rounded-xl px-3 py-1.5 border-2 border-duo-border dark:border-duo-border-dark hover:border-duo-text/30 transition">
+              <button type="button" onClick={cancelClear} className="text-xs font-extrabold uppercase tracking-wide text-duo-text/60 dark:text-duo-text-dark/60 rounded-xl px-3 py-1.5 border-2 border-duo-border dark:border-duo-border-dark hover:border-duo-text/30 transition">
                 Cancelar
               </button>
             </div>
@@ -225,7 +225,7 @@ export default function ChatBoard({ subject: initialSubject, clearSignal = 0 }) 
               placeholder={`Digite em ${subjectMeta.label}...`}
               autoComplete="off"
               aria-label="Mensagem"
-              className="flex-1 min-w-0 bg-duo-bg dark:bg-duo-bg-dark border-2 border-duo-border dark:border-duo-border-dark rounded-2xl px-4 py-2.5 text-sm font-semibold placeholder:text-duo-text/40 dark:placeholder:text-duo-text-dark/40 focus:outline-none focus:border-duo-blue disabled:opacity-50 transition-colors"
+              className="flex-1 min-w-0 bg-duo-bg dark:bg-duo-bg-dark border-2 border-duo-border dark:border-duo-border-dark rounded-2xl px-4 py-2.5 text-sm font-semibold placeholder:text-duo-text/40 dark:placeholder:text-duo-text-dark/40 focus:border-duo-blue disabled:opacity-50 transition-colors"
             />
             {messages.length > 0 && (
               <button

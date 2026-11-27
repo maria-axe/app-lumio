@@ -169,7 +169,7 @@ export default function MateriasBoard({ subject: initialSubject, clearSignal = 0
                 onClick={() => ui.setBoardSubject(ui.activeBoard, item.id)}
                 aria-pressed={subject === item.id}
                 title={item.label}
-                className={`px-2 py-1 rounded-lg text-[11px] font-extrabold leading-none transition-colors ${
+                className={`px-2 py-1 rounded-lg text-xs font-extrabold leading-none transition-colors ${
                   subject === item.id
                     ? 'bg-duo-blue text-white'
                     : 'text-duo-text/60 dark:text-duo-text-dark/60 hover:text-duo-blue'

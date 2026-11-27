@@ -76,7 +76,7 @@ export default function PlacementGate() {
         role="dialog"
         aria-modal="true"
         aria-label="Teste de nivelamento"
-        className="w-full max-w-lg max-h-full overflow-y-auto scroll-area rounded-3xl border-2 border-duo-border dark:border-duo-border-dark bg-white dark:bg-duo-surface-dark shadow-[0_24px_80px_-12px_rgba(0,0,0,0.65)] focus:outline-none"
+        className="w-full max-w-lg max-h-full overflow-y-auto scroll-area rounded-3xl border-2 border-duo-border dark:border-duo-border-dark bg-white dark:bg-duo-surface-dark shadow-[0_24px_80px_-12px_rgba(0,0,0,0.65)]"
       >
         <header className="flex items-center gap-3 px-4 sm:px-5 py-4 border-b-2 border-duo-border dark:border-duo-border-dark">
           <img src={onboarding.mascot} alt="" width="44" height="44" className="w-11 h-11 mascot shrink-0" />
@@ -150,7 +150,7 @@ export default function PlacementGate() {
           {placement.phase === 'test' && currentQuestion && (
             <div className="space-y-5">
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-[11px] font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">
+                <div className="flex items-center justify-between text-xs font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">
                   <span>Pergunta {placement.index + 1}/{placement.test.questions.length}</span>
                   <span>{ui.subject(placement.subject).label}</span>
                 </div>

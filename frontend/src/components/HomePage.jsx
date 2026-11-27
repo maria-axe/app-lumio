@@ -25,7 +25,7 @@ export default function HomePage() {
               <h2 className="font-extrabold text-base sm:text-xl leading-snug break-words">
                 Pronto para continuar, {onboarding.profile.name || 'estudante'}?
               </h2>
-              <p className="text-[11px] sm:text-sm font-semibold text-duo-text/60 dark:text-duo-text-dark/60 leading-snug">
+              <p className="text-xs sm:text-sm font-semibold text-duo-text/60 dark:text-duo-text-dark/60 leading-snug">
                 Um quadro por vez. Suas perguntas acompanham seu perfil.
               </p>
             </div>
@@ -46,7 +46,7 @@ export default function HomePage() {
             />
           </div>
           <span
-            className={`text-[11px] font-extrabold whitespace-nowrap ${
+            className={`text-xs font-extrabold whitespace-nowrap ${
               progress.goalReached
                 ? 'text-duo-green'
                 : 'text-duo-text/60 dark:text-duo-text-dark/60'
@@ -73,7 +73,7 @@ export default function HomePage() {
                   <h3 className="font-extrabold text-sm sm:text-base leading-tight truncate board-accent">
                     {boardLabel(board.kind)}
                   </h3>
-                  <p className="text-[11px] font-semibold text-duo-text/50 dark:text-duo-text-dark/50 leading-snug">
+                  <p className="text-xs font-semibold text-duo-text/50 dark:text-duo-text-dark/50 leading-snug">
                     {boardDescription(board.kind)}
                   </p>
                 </div>

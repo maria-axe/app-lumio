@@ -36,7 +36,7 @@ export default function Sidebar() {
                 className="w-10 h-10 rounded-xl border-2 border-duo-blue/30 shrink-0"
               />
               <span className="min-w-0 text-left">
-                <span className="block text-[10px] font-extrabold uppercase tracking-widest text-duo-text/40 dark:text-duo-text-dark/40">
+                <span className="block text-xs font-extrabold uppercase tracking-widest text-duo-text/40 dark:text-duo-text-dark/40">
                   Lumio
                 </span>
                 <span className="block text-sm font-extrabold truncate">
@@ -57,7 +57,7 @@ export default function Sidebar() {
           </div>
 
           <nav className="flex-1 flex flex-col gap-1.5 px-3 py-4 overflow-y-auto scroll-area" aria-label="Quadros">
-            <p className="px-3 pb-2 text-[10px] font-extrabold uppercase tracking-widest text-duo-text/40 dark:text-duo-text-dark/40">
+            <p className="px-3 pb-2 text-xs font-extrabold uppercase tracking-widest text-duo-text/40 dark:text-duo-text-dark/40">
               Quadros
             </p>
             {ui.boards.map((board) => {
@@ -86,7 +86,7 @@ export default function Sidebar() {
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-extrabold truncate">{boardLabel(board.kind)}</span>
                     <span
-                      className={`block text-[10px] font-bold uppercase tracking-wide truncate ${
+                      className={`block text-xs font-bold uppercase tracking-wide truncate ${
                         active
                           ? 'text-white/60'
                           : 'text-duo-text/40 dark:text-duo-text-dark/40'
@@ -114,7 +114,7 @@ export default function Sidebar() {
               </span>
               <span className="min-w-0">
                 <span className="block text-sm font-extrabold truncate">Editar perfil</span>
-                <span className="block text-[10px] font-bold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">
+                <span className="block text-xs font-bold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">
                   Nome e idade
                 </span>
               </span>
@@ -134,7 +134,7 @@ export default function Sidebar() {
         >
           <span className="flex flex-col items-center gap-2">
             <PanelOpenIcon className="w-6 h-6" />
-            <span className="[writing-mode:vertical-rl] text-[9px] font-extrabold uppercase tracking-widest">
+            <span className="[writing-mode:vertical-rl] text-xs font-extrabold uppercase tracking-widest">
               Menu
             </span>
           </span>

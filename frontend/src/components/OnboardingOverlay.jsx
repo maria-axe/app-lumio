@@ -46,10 +46,10 @@ export default function OnboardingOverlay() {
           </div>
           <div className="sm:hidden">
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[11px] font-extrabold uppercase tracking-wide text-duo-blue">
+              <span className="text-xs font-extrabold uppercase tracking-wide text-duo-blue">
                 Etapa {step} de 4
               </span>
-              <span className="text-[11px] font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">
+              <span className="text-xs font-extrabold uppercase tracking-wide text-duo-text/50 dark:text-duo-text-dark/50">
                 {STEP_LABELS[step - 1]}
               </span>
             </div>
@@ -263,7 +263,7 @@ export default function OnboardingOverlay() {
         )}
 
         {DISPLAY_STEPS.includes(step) && (
-          <div className="px-5 sm:px-6 pb-5 text-center text-[10px] font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">
+          <div className="px-5 sm:px-6 pb-5 text-center text-xs font-extrabold uppercase tracking-wide text-duo-text/40 dark:text-duo-text-dark/40">
             Etapa {step} de 4
           </div>
         )}
@@ -273,7 +273,7 @@ export default function OnboardingOverlay() {
 }
 
 const inputClass =
-  'w-full rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-4 py-3 text-sm font-bold focus:outline-none focus:border-duo-blue';
+  'w-full rounded-2xl border-2 border-duo-border dark:border-duo-border-dark bg-duo-bg dark:bg-duo-bg-dark px-4 py-3 text-sm font-bold focus:border-duo-blue';
 
 const secondaryButton =
   'w-full sm:w-auto rounded-2xl border-2 border-duo-border dark:border-duo-border-dark px-6 py-3 text-sm font-extrabold hover:border-duo-blue transition-colors';
@@ -289,7 +289,7 @@ function FieldLabel({ children }) {
 function StepLabel({ index, current, label }) {
   return (
     <span
-      className={`text-[11px] font-extrabold uppercase tracking-wide ${
+      className={`text-xs font-extrabold uppercase tracking-wide ${
         current >= index ? 'text-duo-blue' : 'text-duo-text/40'
       }`}
     >
