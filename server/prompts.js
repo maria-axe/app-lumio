@@ -65,7 +65,8 @@ Rules:
 - SPEAKING tasks (type g): the student must SPEAK the ${language} sentence aloud (no audio file to listen to first). For these:
   - DO NOT include "audio" field, or set it to empty string.
   - "question" MUST be in Portuguese and MUST clearly show the target sentence for the student to repeat. Use this exact style: "Repita em voz alta esta frase:" and put the ${language} sentence right after. Example: "Repita em voz alta esta frase: I have a blue car."
-  - The target sentence the student must reproduce is the CORRECT one. The 3 options MUST all be in ${language}. Put the CORRECT target sentence as one option, and the other two must be plausible WRONG versions (different word/order/tense) that sound similar. The correctIndex points to the CORRECT sentence to say.
+  - The sentence after the prefix is the ONLY target. The app captures the student's microphone and compares the spoken words to that sentence; no multiple-choice option is shown.
+  - Still fill the required "options" array for the response schema: put the target sentence at correctIndex and make the other two plausible WRONG versions. These options are internal only.
   - The instruction must make it clear this is about reproducing/pronouncing that sentence.
   - "explanation" gives a short tip in Portuguese (pronunciation/grammar).
 - For NON-listening tasks, OMIT the "audio" field entirely (or send an empty string).

@@ -111,3 +111,74 @@ export function speak(text, lang = 'en-US', enabled = true, rate = 0.95, onEnd, 
 export function stopSpeaking() {
   if (canSpeak()) window.speechSynthesis.cancel();
 }
+
+const SPEAKING_PREFIX = /^Repita em voz alta esta frase:\s*/i;
+
+export function getSpeakingTarget(question) {
+  if (typeof question !== 'string') return '';
+  return SPEAKING_PREFIX.test(question) ? question.replace(SPEAKING_PREFIX, '').trim() : '';
+}
+
+export function canListen() {
+  return (
+    typeof window !== 'undefined' &&
+    Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
+  );
+}
+
+export function createRecognition(lang = 'en-US') {
+  if (!canListen()) return null;
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new Recognition();
+  recognition.lang = lang;
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  return recognition;
+}
+
+function normalizeText(text) {
+  return String(text ?? '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function tokenize(text) {
+  const normalized = normalizeText(text);
+  return normalized ? normalized.split(' ') : [];
+}
+
+function wordSimilarity(a, b) {
+  if (a === b) return 1;
+  const max = Math.max(a.length, b.length);
+  if (!max) return 0;
+
+  const previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= a.length; i += 1) {
+    let diagonal = previous[0];
+    previous[0] = i;
+    for (let j = 1; j <= b.length; j += 1) {
+      const above = previous[j];
+      previous[j] = Math.min(
+        previous[j] + 1,
+        previous[j - 1] + 1,
+        diagonal + (a[i - 1] === b[j - 1] ? 0 : 1)
+      );
+      diagonal = above;
+    }
+  }
+  return 1 - previous[b.length] / max;
+}
+
+export function evaluateSpeech(transcript, target) {
+  const heard = tokenize(transcript);
+  const expected = tokenize(target);
+  if (!heard.length || expected.length !== heard.length) return false;
+
+  const scores = expected.map((word, index) => wordSimilarity(heard[index], word));
+  return scores.every((score) => score >= 0.7) && scores.reduce((sum, score) => sum + score, 0) / scores.length >= 0.88;
+}

@@ -15,7 +15,7 @@ Quadros atuais:
 | ID | Nome | Objetivo |
 |---|---|---|
 | `chat` | Chat | conversa no idioma-alvo com correção em PT-BR |
-| `quiz` | Idiomas | 5 perguntas de múltipla escolha, com listening/speaking |
+| `quiz` | Idiomas | 5 desafios: listening por áudio e speaking com captura de microfone (sem opções) |
 | `materias` | Matérias | 5 perguntas de Português, Matemática, História, Geografia e Ciências |
 | `curiosidades` | Curiosidades | 10 perguntas de cultura geral |
 | `dialogos` | Diálogos | conversa entre duas pessoas com 2 perguntas de compreensão |
@@ -114,7 +114,7 @@ Use esta tabela para localizar uma decisão, copiar o padrão ou estudar o porqu
 | Qualidade das perguntas | `question-check.js` | validação de acento, sinal de `?` e redação antes de responder | trate saída de LLM como dado não confiável |
 | Memória sem IA | `memory-decks.js`, `WordArt.jsx`, `MemoriaBoard.jsx` | decks locais, pares com mesmo SVG nas duas cartas, rotação via `memory_seen` | use estado local quando a rodada não precisar de geração |
 | XP e metas | `ProgressContext.jsx` | progresso agregado por `subject`, datas locais, bônus de rodada | separe estado por domínio e agregue no getter |
-| Áudio e voz | `sound.js` | Web Audio para efeitos, `speechSynthesis` para narração | isole APIs do navegador num módulo e exponha funções simples |
+| Áudio e voz | `sound.js` | Web Audio para efeitos, `speechSynthesis` para narração e `SpeechRecognition` para responder speaking | isole APIs do navegador num módulo e exponha funções simples |
 | Tema e acessibilidade | `styles.css`, `tailwind.config.js` | `darkMode: 'class'`, tokens de acento e `prefers-reduced-motion` | coloque tokens em CSS e não espalhe cores hardcoded |
 | Segurança | `server/index.js`, `routes/*`, `prompts.js` | whitelist, limites de payload/string, chaves só no servidor | valide na borda e nunca confie no payload do cliente |
 
@@ -581,7 +581,7 @@ buildQuizSystemInstruction(level, subject, asked)
 | Serviço | Registry / constantes | Observações |
 |---|---|---|
 | `gemini.js` | `MAX_HISTORY=10`, `MAX_MESSAGE_CHARS=2000`, `MAX_OUTPUT_TOKENS=1024` | converte `assistant → model`, aplica perfil, devolve texto |
-| `quiz.js` | `OPTIONS_COUNT=3`, `MAX_OUTPUT_TOKENS=512` | schema com `audio` opcional; `shuffleOptions()` remapeia `correctIndex`; cobre listening e speaking |
+| `quiz.js` | `OPTIONS_COUNT=3`, `MAX_OUTPUT_TOKENS=512` | schema com `audio` opcional; `shuffleOptions()` remapeia `correctIndex`; options do speaking são internas — a UI usa a frase do enunciado e microfone |
 | `materias.js` | `MATERIAS = { portugues, matematica, historia, geografia, ciencias }`, `resolveMateria()` | 3 opções, `shuffleOptions()` remapeia `correctIndex` |
 | `curiosidades.js` | `CATEGORIES = [9 categorias]` | 4 opções, exige `category` válida; `shuffleCuriosidadeOptions()` embaralha e remapeia `correctIndex` |
 | `dialogos.js` | `DIALOG_SUBJECTS = { english, spanish, french }` | 6 falas alternadas, 2 perguntas, 4 opções cada |
@@ -659,7 +659,7 @@ export const GROQ_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 ### Componentes
 
 - `chat`: carrega histórico por `subject`, envia `/api/chat`, limpa conversa com confirmação em 5 s, aborta requests ao trocar contexto.
-- `quiz`: roda 5 perguntas; `audio` pode ser fala para listening; troca de nível/idioma reinicia a rodada quando iniciada.
+- `quiz`: roda 5 desafios; `audio` pode ser fala para listening; speaking esconde as opções, capta a voz e compara ao texto após `Repita em voz alta esta frase:`; troca de nível/idioma reinicia a rodada quando iniciada.
 - `materias`: roda 5 perguntas; troca de matéria via `setSubject(id)`; usa `sendMaterias`.
 - `curiosidades`: roda 10 perguntas iniciais; usa `sendCuriosidade`.
 - `dialogos`: mostra 6 falas alternadas, tradução opcional, narração por personagem (`speaker-a`/`speaker-b`) e 2 perguntas.
@@ -730,7 +730,7 @@ Response: `{ "reply": "<texto com seção PT-BR:>" }`.
 - `subject`: `english | spanish | french`; inválido → `english`.
 - `asked`: strings sanitizadas, últimas 20, até 160 caracteres.
 - Response: `{ "question", "audio", "options", "correctIndex", "translation", "explanation" }`.
-- `options`: 3 itens; `audio`: frase falada no listening, vazio nos demais.
+- `options`: 3 itens (no speaking, internas); `audio`: frase falada no listening, vazio nos demais; no speaking, o alvo vem depois de `Repita em voz alta esta frase:`.
 
 ### `POST /api/materias`
 
@@ -935,6 +935,7 @@ Edite `OBJECTIVE_LABELS`, `SCHOOLING_LABELS`, `INTEREST_LABELS`, `AGE_BANDS` em 
 | Board em branco ao recarregar | rota inválida | Use apenas `/board/<id>` com os IDs listados acima |
 | Erro de CORS | HTML aberto direto do disco | Acesse via `http://localhost:3000` |
 | Voz não fala | navegador sem voz instalada | Verifique `speechSynthesis`/`canSpeak()` e o toggle de som |
+| Speaking não capta | navegador sem `SpeechRecognition` ou microfone negado | Use Chrome/Edge/Android em HTTPS e permita o microfone; `canListen()` indica suporte |
 
 ---
 
@@ -946,7 +947,7 @@ Edite `OBJECTIVE_LABELS`, `SCHOOLING_LABELS`, `INTEREST_LABELS`, `AGE_BANDS` em 
 - [x] Shell com sidebar full-height em coluna própria, expansível com labels, botão de fechar e alça de reabertura na borda; hambúrguer só no mobile, topbar `h-16`, hero e footer flexível na coluna de conteúdo
 - [x] Navegação por rotas `/board/:id` com histórico do navegador
 - [x] XP, ofensiva, meta diária e progresso por matéria
-- [x] Quiz com listening e speaking via Web Speech API
+- [x] Quiz com listening por `speechSynthesis` e speaking por `SpeechRecognition`, sem múltipla escolha no speaking
 - [x] Diálogos com narração por personagem e tradução opcional
 - [x] Fallback de modelos Gemini, timeout e retry
 - [x] Fallback para Groq gratuito quando o Gemini estiver sem cota

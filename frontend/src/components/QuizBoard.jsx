@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { sendQuiz } from '../lib/api.js';
-import { canSpeak, playCorrect, playWrong, playWin, speak, stopSpeaking } from '../lib/sound.js';
+import {
+  canListen,
+  canSpeak,
+  createRecognition,
+  evaluateSpeech,
+  getSpeakingTarget,
+  playCorrect,
+  playWrong,
+  playWin,
+  speak,
+  stopSpeaking,
+} from '../lib/sound.js';
 import { XP_PER_CORRECT, XP_ROUND_BONUS } from '../contexts/ProgressContext.jsx';
 import { useOnboarding } from '../contexts/OnboardingContext.jsx';
 import { useProgress } from '../contexts/ProgressContext.jsx';
@@ -34,6 +45,10 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
   const [correctIndex, setCorrectIndex] = useState(-1);
   const [translation, setTranslation] = useState('');
   const [explanation, setExplanation] = useState('');
+  const [transcript, setTranscript] = useState('');
+  const [speechResult, setSpeechResult] = useState(null);
+  const [speechError, setSpeechError] = useState('');
+  const [listening, setListening] = useState(false);
   const [selected, setSelected] = useState(null);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,12 +62,15 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
 
   const askedRef = useRef([]);
   const controllerRef = useRef(null);
+  const recognitionRef = useRef(null);
   const startedRef = useRef(false);
   const startRoundRef = useRef(null);
   const levelRef = useRef(level);
   const subjectRef = useRef(subject);
 
-  const isCorrect = selected === correctIndex;
+  const speakingTarget = getSpeakingTarget(question);
+  const isSpeakingQuestion = Boolean(speakingTarget);
+  const isCorrect = isSpeakingQuestion ? speechResult === true : selected === correctIndex;
   const accuracy = Math.round((score / ROUND_SIZE) * 100);
 
   const speakAudio = useCallback(
@@ -62,6 +80,22 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
     },
     [audio, audioSupported, isListening, subjectMeta.speechLang, ui.sound]
   );
+
+  const stopRecognition = useCallback(() => {
+    const recognition = recognitionRef.current;
+    recognitionRef.current = null;
+    if (!recognition) return;
+    recognition.onstart = null;
+    recognition.onresult = null;
+    recognition.onerror = null;
+    recognition.onend = null;
+    try {
+      recognition.abort();
+    } catch {
+      // Reconhecimento já encerrado.
+    }
+    setListening(false);
+  }, []);
 
   const loadQuestion = useCallback(async () => {
     controllerRef.current?.abort();
@@ -78,7 +112,11 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
     setCorrectIndex(-1);
     setTranslation('');
     setExplanation('');
+    setTranscript('');
+    setSpeechResult(null);
+    setSpeechError('');
     stopSpeaking();
+    stopRecognition();
 
     try {
       const data = await sendQuiz({
@@ -108,7 +146,7 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
         setLoading(false);
       }
     }
-  }, [isListening, level, onboarding.profile, speakAudio, subject]);
+  }, [isListening, level, onboarding.profile, speakAudio, stopRecognition, subject]);
 
   const startRound = useCallback(() => {
     setCurrent(0);
@@ -153,25 +191,92 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
     () => () => {
       controllerRef.current?.abort();
       stopSpeaking();
+      stopRecognition();
     },
-    []
+    [stopRecognition]
+  );
+
+  const finishAnswer = useCallback(
+    (correct) => {
+      setChecked(true);
+      setAnswered((value) => value + 1);
+      stopSpeaking();
+      stopRecognition();
+      if (correct) {
+        setScore((value) => value + 1);
+        setRoundXp((value) => value + XP_PER_CORRECT);
+        setXpGain(XP_PER_CORRECT);
+        progress.addXp(subject, XP_PER_CORRECT);
+        playCorrect(ui.sound);
+      } else {
+        playWrong(ui.sound);
+      }
+    },
+    [progress, stopRecognition, stopSpeaking, subject, ui.sound]
   );
 
   const check = () => {
-    if (selected === null || checked || loading) return;
-    setChecked(true);
-    setAnswered((value) => value + 1);
-    stopSpeaking();
-    if (isCorrect) {
-      setScore((value) => value + 1);
-      setRoundXp((value) => value + XP_PER_CORRECT);
-      setXpGain(XP_PER_CORRECT);
-      progress.addXp(subject, XP_PER_CORRECT);
-      playCorrect(ui.sound);
-    } else {
-      playWrong(ui.sound);
-    }
+    if (checked || loading) return;
+    if (isSpeakingQuestion ? speechResult === null : selected === null) return;
+    finishAnswer(isCorrect);
   };
+
+  const startListening = useCallback(() => {
+    if (!isSpeakingQuestion || !canListen() || listening || checked || loading) return;
+
+    stopRecognition();
+    setTranscript('');
+    setSpeechResult(null);
+    setSpeechError('');
+
+    const recognition = createRecognition(subjectMeta.speechLang || 'en-US');
+    if (!recognition) return;
+
+    recognition.onstart = () => setListening(true);
+    recognition.onend = () => {
+      if (recognitionRef.current === recognition) {
+        recognitionRef.current = null;
+        setListening(false);
+      }
+    };
+    recognition.onerror = (event) => {
+      if (event.error === 'no-speech') {
+        setSpeechError('Não ouvi nada. Tente falar mais perto do microfone.');
+      } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        setSpeechError('Permita o uso do microfone para fazer este exercício.');
+      } else {
+        setSpeechError('Não consegui captar sua fala. Tente novamente.');
+      }
+    };
+    recognition.onresult = (event) => {
+      if (recognitionRef.current !== recognition) return;
+      const finalResult = Array.from(event.results).reverse().find((result) => result.isFinal);
+      if (!finalResult) return;
+      const heard = finalResult[0].transcript.trim();
+      const correct = evaluateSpeech(heard, speakingTarget);
+      setTranscript(heard);
+      setSpeechResult(correct);
+      finishAnswer(correct);
+    };
+
+    recognitionRef.current = recognition;
+    try {
+      recognition.start();
+    } catch {
+      recognitionRef.current = null;
+      setListening(false);
+      setSpeechError('Não foi possível iniciar o microfone. Tente novamente.');
+    }
+  }, [
+    checked,
+    finishAnswer,
+    isSpeakingQuestion,
+    listening,
+    loading,
+    speakingTarget,
+    stopRecognition,
+    subjectMeta.speechLang,
+  ]);
 
   const next = async () => {
     if (finished) return;
@@ -297,16 +402,50 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
                 </button>
               )}
 
-              <Options
-                options={options}
-                selected={selected}
-                checked={checked}
-                correctIndex={correctIndex}
-                onChoose={(index) => {
-                  if (loading || checked) return;
-                  setSelected(index);
-                }}
-              />
+              {isSpeakingQuestion ? (
+                <div className="space-y-3">
+                  <p className="text-sm font-bold text-duo-text/60 dark:text-duo-text-dark/60">
+                    Diga em voz alta exatamente a frase acima.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={startListening}
+                    disabled={!canListen() || listening || checked || loading}
+                    data-action="speak-answer"
+                    aria-label="Falar a frase"
+                    className="btn-action w-full flex items-center justify-center gap-3 rounded-2xl bg-duo-blue text-white border-b-4 border-duo-blue-dark px-6 py-4 hover:brightness-105 active:border-b-0 active:translate-y-1 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:active:translate-y-0"
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="9" y="2" width="6" height="12" rx="3" />
+                      <path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8" />
+                    </svg>
+                    <span className="font-extrabold uppercase tracking-wide text-sm">
+                      {listening ? 'Ouvindo...' : canListen() ? 'Falar frase' : 'Microfone indisponível'}
+                    </span>
+                  </button>
+                  {speechError && (
+                    <p className="text-sm font-bold text-duo-red" role="alert">
+                      {speechError}
+                    </p>
+                  )}
+                  {transcript && (
+                    <p className="text-sm font-semibold text-duo-text/70 dark:text-duo-text-dark/70">
+                      Você disse: <strong className="text-duo-text dark:text-duo-text-dark">“{transcript}”</strong>
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <Options
+                  options={options}
+                  selected={selected}
+                  checked={checked}
+                  correctIndex={correctIndex}
+                  onChoose={(index) => {
+                    if (loading || checked) return;
+                    setSelected(index);
+                  }}
+                />
+              )}
             </div>
           )}
         </div>
@@ -317,10 +456,10 @@ export default function QuizBoard({ subject: initialSubject, clearSignal = 0 }) 
           checked={checked}
           isCorrect={isCorrect}
           explanation={explanation}
-          noteLabel="Tradução"
-          note={translation}
+          noteLabel={isSpeakingQuestion ? 'Você disse' : 'Tradução'}
+          note={isSpeakingQuestion ? transcript : translation}
           xpGain={xpGain}
-          checkDisabled={selected === null}
+          checkDisabled={isSpeakingQuestion ? speechResult === null : selected === null}
           onCheck={check}
           onNext={next}
           nextLabel={current >= ROUND_SIZE ? 'Ver resultado' : 'Continuar'}
