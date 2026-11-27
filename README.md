@@ -106,7 +106,7 @@ Use esta tabela para localizar uma decisão, copiar o padrão ou estudar o porqu
 | Navegação sem router | `UiContext.jsx` | rotas `/` e `/board/:id` via History API (`pushState`, `popstate`) | centralize `route`/`activeBoard` num context e sincronize com a URL |
 | Onboarding adaptativo | `OnboardingOverlay.jsx`, `student-context.js` | perfil normalizado e injetado em todos os prompts | sanitize e transforme perfil em contexto antes de montar o prompt |
 | Teste de nível | `PlacementGate.jsx`, `PlacementContext.jsx`, `routes/placement.js`, `services/placement.js` | 6 perguntas `A1`–`C2`, token HMAC sem gabarito, clamp por idade | nunca envie respostas corretas ao cliente; use HMAC + TTL |
-| Instalação PWA | `InstallPrompt.jsx`, `installPrompt.js` | captura `beforeinstallprompt`, abre popup no topo em toda visita e chama `prompt()` no clique; sem persistência de recusa | guarde o evento e só chame `prompt()` em resposta a gesto do usuário |
+| Instalação PWA | `InstallPrompt.jsx`, `installPrompt.js` | captura `beforeinstallprompt`, mostra faixa compacta no topo e chama `prompt()` no clique; `Agora não` adia 7 dias | guarde o evento e só chame `prompt()` em resposta a gesto do usuário |
 | Registro de boards | `constants.js`, `BoardPage.jsx` | `CORE_BOARDS` com `id`, `kind` e `subject`; renderização por `kind` | troque `if/else` solto por registry + switch único |
 | Chamadas de IA | `api.js`, `routes/*`, `services/*`, `gemini-client.js`, `groq-client.js` | fetch centralizado, validação HTTP, prompt/schema/parser no service, fallback Gemini → Groq | mantenha controller/route fino e regra de negócio no service |
 | Qualidade das perguntas | `question-check.js` | validação de acento, sinal de `?` e redação antes de responder | trate saída de LLM como dado não confiável |
@@ -409,7 +409,7 @@ Se aparecer `vite: not found`, rode `npm run install:frontend`. `npm run build` 
 
 O app pode ser instalado na tela inicial sem Google Play. `frontend/public/manifest.webmanifest` traz nome, ícones e `display: standalone`; `frontend/public/sw.js` guarda apenas o casco da aplicação. Rotas `/api/*` nunca entram no cache, então respostas de IA e tokens do placement continuam sempre frescos.
 
-No celular, abra a URL do Worker e use `Adicionar à tela inicial` (Safari) ou `Instalar app` (Chrome). No Chrome Android, `beforeinstallprompt` é capturado e vira um popup no topo com botão direto de instalação. O popup reaparece em toda visita; se o Chrome não disparar o evento, mostra instruções do menu `⋮`.
+No celular, abra a URL do Worker e use `Adicionar à tela inicial` (Safari) ou `Instalar app` (Chrome). No Chrome Android, `beforeinstallprompt` é capturado e vira uma faixa compacta no topo com botão direto de instalação; `Agora não` adia por 7 dias.
 
 Não há scripts de `test` ou `lint`.
 

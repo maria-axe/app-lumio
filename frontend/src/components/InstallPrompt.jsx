@@ -1,27 +1,20 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import {
   dismissInstallPrompt,
   getInstallPromptSnapshot,
   isStandalone,
   promptInstall,
   subscribeInstallPrompt,
+  wasInstallDismissedRecently,
 } from '../lib/installPrompt.js';
 
 export default function InstallPrompt({ enabled = true }) {
   const state = useSyncExternalStore(subscribeInstallPrompt, getInstallPromptSnapshot, getInstallPromptSnapshot);
-  const [closed, setClosed] = useState(false);
-  const [waited, setWaited] = useState(false);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setWaited(true), 1200);
-    return () => window.clearTimeout(timer);
-  }, []);
-
   const visible = enabled
-    && !closed
+    && state.canInstall
     && !state.installed
     && !isStandalone()
-    && (state.canInstall || waited);
+    && !wasInstallDismissedRecently();
 
   useEffect(() => {
     if (!visible) return undefined;
@@ -29,7 +22,6 @@ export default function InstallPrompt({ enabled = true }) {
     const onKeyDown = (event) => {
       if (event.key !== 'Escape') return;
       event.stopPropagation();
-      setClosed(true);
       dismissInstallPrompt();
     };
 
@@ -39,73 +31,56 @@ export default function InstallPrompt({ enabled = true }) {
 
   if (!visible) return null;
 
-  const canInstallNow = state.canInstall;
-
-  const handleClose = () => {
-    setClosed(true);
-    dismissInstallPrompt();
-  };
-
   const handleInstall = async () => {
     try {
-      const outcome = await promptInstall();
-      if (outcome === 'dismissed') setClosed(true);
+      await promptInstall();
     } catch {
-      handleClose();
+      dismissInstallPrompt();
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[85] flex items-start justify-center bg-black/50 p-3 pt-16 sm:pt-20" role="presentation">
-      <section
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="install-title"
-        className="w-full max-w-sm rounded-3xl border-2 border-duo-blue/40 bg-white p-5 shadow-[0_24px_60px_-20px_rgba(28,176,246,0.85)] dark:border-duo-blue/40 dark:bg-duo-surface-dark"
+    <div className="fixed inset-x-0 top-0 z-[85] p-2 sm:p-3">
+      <aside
+        role="region"
+        aria-labelledby="install-banner-title"
+        className="mx-auto flex max-w-3xl flex-col gap-2 rounded-2xl border-2 border-duo-blue/40 bg-white/95 p-2.5 shadow-[0_14px_34px_-14px_rgba(28,176,246,0.85)] backdrop-blur dark:border-duo-blue/40 dark:bg-duo-surface-dark/95 sm:flex-row sm:items-center sm:gap-3 sm:p-2"
       >
-        <div className="flex items-start gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
           <img
             src="/img/icon-192.png"
             alt=""
-            width="56"
-            height="56"
-            className="h-14 w-14 shrink-0 rounded-2xl border-2 border-duo-blue/30"
+            width="36"
+            height="36"
+            className="h-9 w-9 shrink-0 rounded-xl border border-duo-blue/30"
           />
           <div className="min-w-0">
-            <h2 id="install-title" className="text-lg font-extrabold text-duo-text dark:text-duo-text-dark">
-              Leve o Lumio com você
-            </h2>
-            <p className="mt-1 text-sm font-semibold text-duo-text/70 dark:text-duo-text-dark/70">
-              {canInstallNow
-                ? 'Instale na tela inicial e abra sem precisar do link. Sem Play Store.'
-                : 'Toque no menu ⋮ do Chrome e escolha Instalar app.'}
+            <p id="install-banner-title" className="truncate text-sm font-extrabold text-duo-text dark:text-duo-text-dark">
+              Instale o Lumio
+            </p>
+            <p className="truncate text-xs font-semibold text-duo-text/60 dark:text-duo-text-dark/60">
+              Tela inicial, sem Play Store · volta em 7 dias se recusar
             </p>
           </div>
         </div>
 
-        <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-          {canInstallNow && (
-            <button
-              type="button"
-              onClick={handleInstall}
-              className="flex-1 rounded-2xl border-2 border-b-4 border-duo-green-dark bg-duo-green px-4 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-[0_10px_24px_-12px_rgba(88,204,2,0.9)] transition hover:brightness-105 active:translate-y-0.5 active:border-b-2"
-            >
-              Instalar app
-            </button>
-          )}
+        <div className="flex shrink-0 gap-2">
           <button
             type="button"
-            onClick={handleClose}
-            className="flex-1 rounded-2xl border-2 border-duo-border bg-white px-4 py-3 text-sm font-extrabold uppercase tracking-wide text-duo-text/60 transition hover:bg-duo-bg dark:border-duo-border-dark dark:bg-duo-surface-dark dark:text-duo-text-dark/60 dark:hover:bg-white/5"
+            onClick={handleInstall}
+            className="rounded-xl border-2 border-b-4 border-duo-green-dark bg-duo-green px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-[0_8px_18px_-10px_rgba(88,204,2,0.9)] transition hover:brightness-105 active:translate-y-0.5 active:border-b-2"
           >
-            {canInstallNow ? 'Agora não' : 'Entendi'}
+            Instalar
+          </button>
+          <button
+            type="button"
+            onClick={dismissInstallPrompt}
+            className="rounded-xl border-2 border-duo-border bg-white px-3 py-1.5 text-xs font-extrabold uppercase tracking-wide text-duo-text/60 transition hover:bg-duo-bg dark:border-duo-border-dark dark:bg-duo-surface-dark dark:text-duo-text-dark/60 dark:hover:bg-white/5"
+          >
+            Agora não
           </button>
         </div>
-
-        <p className="mt-3 text-center text-[11px] font-bold text-duo-text/40 dark:text-duo-text-dark/40">
-          Aparece de novo na próxima visita.
-        </p>
-      </section>
+      </aside>
     </div>
   );
 }
